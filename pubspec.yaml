@@ -1,0 +1,38 @@
+name: map_application
+description: "Modern Online & Offline Map Application"
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Location Services
+  geolocator: ^13.0.2
+  permission_handler: ^11.3.1
+
+  # Map Services
+  flutter_map: ^8.2.1
+  latlong2: ^0.9.1
+
+  # Network & Connectivity
+  http: ^1.2.2
+  connectivity_plus: ^6.1.0
+
+  # Icons
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0
+
+  cached_network_image: ^3.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
