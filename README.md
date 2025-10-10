@@ -42,6 +42,10 @@ Kullanıcının anlık konumunu tespit eder, harita üzerinde gösterir ve bağl
 
 ### 2️⃣ Kurulum adımları
 ```bash
+# Repo'yu Klonla
+git clone https://github.com/kullanici/drone_camera.git
+cd drone_camera
+
 # Bağımlılıkları yükle
 flutter pub get
 
