@@ -47,4 +47,3 @@ flutter pub get
 
 # Uygulamayı çalıştır
 flutter run
->>>>>>> 1e525ec79ee096487603ebada23f0aed29c36970
