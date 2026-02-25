@@ -10,9 +10,18 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
+// =============================================================================
+//  MAIN
+// =============================================================================
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.transparent,
+  ));
   runApp(const MyApp());
 }
 
@@ -23,12 +32,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Modern Maps',
+      title: 'IOT Scooter',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2E7BFF),
-          brightness: Brightness.light,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0D1117),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF00E5FF),
+          secondary: Color(0xFF7C4DFF),
+          surface: Color(0xFF161B22),
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -37,7 +49,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ─── Splash Screen ───────────────────────────────────────────────────────────
+// =============================================================================
+//  SPLASH SCREEN
+// =============================================================================
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -55,7 +69,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -75,12 +88,10 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Start animation after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.forward();
     });
 
-    // Navigate to MapPage after ~2 seconds
     Future.delayed(const Duration(milliseconds: 2200), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -132,7 +143,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// ─── Map Page ────────────────────────────────────────────────────────────────
+// =============================================================================
+//  MAP PAGE
+// =============================================================================
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -142,6 +155,15 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
+  // Design tokens
+  static const _kPrimary = Color(0xFF00E5FF);
+  static const _kAccent = Color(0xFF7C4DFF);
+  static const _kSurface = Color(0xFF161B22);
+  static const _kBg = Color(0xFF0D1117);
+  static const _kSuccess = Color(0xFF00E676);
+  static const _kWarning = Color(0xFFFF9100);
+  static const _kDanger = Color(0xFFFF5252);
+
   MapController? _mapController;
 
   // Animation Controllers
@@ -171,17 +193,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   bool showLocationCard = false;
   bool _isTransitioning = false;
 
-  // Vehicle Data - Enhanced
+  // Vehicle Data
   int batteryLevel = 85;
   int speed = 0;
   int motorTemp = 45;
   int signalStrength = 4;
-  String gpsAccuracy = 'İyi';
-  String trafficInfo = 'Hafif Trafik';
+  String gpsAccuracy = 'Good';
+  String trafficInfo = 'Light';
 
   // Navigation Data
-  double routeDistance = 0; // km
-  int routeDuration = 0; // dakika
+  double routeDistance = 0;
+  int routeDuration = 0;
   String arrivalTime = '';
 
   // Map Data
@@ -192,22 +214,26 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   String routeInfo = '';
 
   // Map Layers
-  String currentMapStyle = 'standard';
+  String currentMapStyle = 'dark';
   final List<MapLayer> availableLayers = [
-    MapLayer('standard', 'Standart', Icons.map),
-    MapLayer('satellite', 'Uydu', Icons.satellite_alt),
-    MapLayer('terrain', 'Arazi', Icons.terrain),
+    MapLayer('dark', 'Koyu', Icons.dark_mode_rounded),
+    MapLayer('standard', 'Standart', Icons.map_rounded),
+    MapLayer('satellite', 'Uydu', Icons.satellite_alt_rounded),
+    MapLayer('terrain', 'Arazi', Icons.terrain_rounded),
   ];
 
-  // Arama state
+  // Search state
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
   List<SearchResult> _searchResults = [];
   final FocusNode _searchFocusNode = FocusNode();
   Timer? _searchDebouncer;
 
-  // Sayfalama state
   int _currentStatsPage = 0;
+
+  // ===========================================================================
+  //  LIFECYCLE & INITIALIZATION
+  // ===========================================================================
 
   @override
   void initState() {
@@ -277,12 +303,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       curve: Curves.easeInOut,
     ));
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        _sidebarController.forward();
-        _statsTransitionController.forward();
-      }
-    });
   }
 
   void _startEnhancedDataUpdate() {
@@ -314,24 +334,37 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   Future<void> _initializeApp() async {
     try {
-      debugPrint('🚀 Başlatılıyor...');
-
+      debugPrint('Starting...');
       await _checkConnectivity();
       _mapController = MapController();
 
       if (mounted) {
         setState(() => _isInitializing = false);
+        _startEntryAnimations();
         _requestLocationAsync();
       }
-
-      debugPrint('✅ Başlatma tamamlandı');
+      debugPrint('Init complete');
     } catch (e) {
-      debugPrint('❌ Başlatma hatası: $e');
+      debugPrint('Init error: $e');
       if (mounted) {
         setState(() => _isInitializing = false);
+        _startEntryAnimations();
         _setDefaultLocation();
       }
     }
+  }
+
+  // ===========================================================================
+  //  CONNECTIVITY
+  // ===========================================================================
+
+  void _startEntryAnimations() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _sidebarController.forward();
+        _statsTransitionController.forward();
+      }
+    });
   }
 
   Future<void> _checkConnectivity() async {
@@ -354,12 +387,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             setState(() {
               isOnline = newOnlineStatus;
             });
-            _animateMapTransition();
           }
         }
       });
     } catch (e) {
-      debugPrint('⚠️ Bağlantı kontrolü hatası: $e');
+      debugPrint('Connectivity check error: $e');
       if (mounted) {
         setState(() => isOnline = false);
       }
@@ -368,7 +400,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   void _animateMapTransition() {
     if (!mounted) return;
-
     setState(() => _isTransitioning = true);
     _mapTransitionController.reset();
     _mapTransitionController.forward().then((_) {
@@ -377,6 +408,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       }
     });
   }
+
+  // ===========================================================================
+  //  LOCATION
+  // ===========================================================================
 
   void _requestLocationAsync() {
     _locationTimer = Timer(const Duration(milliseconds: 500), () async {
@@ -387,33 +422,25 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Future<void> _handleLocationPermissions() async {
     try {
       if (!await Geolocator.isLocationServiceEnabled()) {
-        debugPrint('❌ Konum servisleri kapalı');
         _setDefaultLocation();
         return;
       }
 
       LocationPermission permission = await Geolocator.checkPermission();
-      debugPrint('📍 Konum izni durumu: $permission');
-
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission()
             .timeout(const Duration(seconds: 10));
-        debugPrint('📍 İzin talebi sonucu: $permission');
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        _setDefaultLocation();
-        return;
-      }
-
-      if (permission == LocationPermission.denied) {
+      if (permission == LocationPermission.deniedForever ||
+          permission == LocationPermission.denied) {
         _setDefaultLocation();
         return;
       }
 
       await _getCurrentLocation();
     } catch (e) {
-      debugPrint('❌ İzin alma hatası: $e');
+      debugPrint('Permission error: $e');
       _setDefaultLocation();
     }
   }
@@ -422,22 +449,18 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (!mounted) return;
 
     try {
-      debugPrint('📍 Konum alınıyor...');
-
       try {
         final lastPosition = await Geolocator.getLastKnownPosition()
             .timeout(const Duration(seconds: 3));
 
         if (lastPosition != null && mounted) {
-          debugPrint(
-              '✅ Son konum: ${lastPosition.latitude}, ${lastPosition.longitude}');
           setState(() => currentPosition = lastPosition);
           _moveMapToLocation(lastPosition);
           _getCurrentPositionInBackground();
           return;
         }
       } catch (e) {
-        debugPrint('⚠️ Son konum alma hatası: $e');
+        debugPrint('Last position error: $e');
       }
 
       final position = await Geolocator.getCurrentPosition(
@@ -446,13 +469,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       ).timeout(const Duration(seconds: 15));
 
       if (mounted) {
-        debugPrint(
-            '✅ Güncel konum: ${position.latitude}, ${position.longitude}');
         setState(() => currentPosition = position);
         _moveMapToLocation(position);
       }
     } catch (e) {
-      debugPrint('⚠️ Konum alma hatası: $e');
+      debugPrint('Location error: $e');
       _setDefaultLocation();
     }
   }
@@ -460,36 +481,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   void _getCurrentPositionInBackground() {
     Timer(const Duration(seconds: 5), () async {
       if (!mounted) return;
-
       try {
         final position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.medium,
           timeLimit: const Duration(seconds: 8),
         );
-
         if (mounted) {
           setState(() => currentPosition = position);
-          debugPrint('✅ Güncel konum güncellendi');
         }
       } catch (e) {
-        debugPrint('⚠️ Background konum güncellemesi hatası: $e');
+        debugPrint('Background location error: $e');
       }
     });
   }
 
   void _moveMapToLocation(Position position) {
-    if (!_mapReady || _mapController == null || !mounted) {
-      debugPrint('⏳ Harita henüz hazır değil');
-      return;
-    }
-
+    if (!_mapReady || _mapController == null || !mounted) return;
     try {
       _mapController!.move(
         LatLng(position.latitude, position.longitude),
         15,
       );
     } catch (e) {
-      debugPrint('❌ Harita hareket hatası: $e');
+      debugPrint('Map move error: $e');
     }
   }
 
@@ -519,7 +533,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             try {
               _mapController!.move(const LatLng(defaultLat, defaultLng), 13);
             } catch (e) {
-              debugPrint('❌ Varsayılan konum hatası: $e');
+              debugPrint('Default location error: $e');
             }
           }
         });
@@ -528,10 +542,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   void _onMapReady() {
-    debugPrint('🗺️ Harita hazır');
     if (mounted) {
       setState(() => _mapReady = true);
-
       if (currentPosition != null) {
         Timer(const Duration(milliseconds: 500), () {
           if (mounted && currentPosition != null) {
@@ -541,6 +553,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       }
     }
   }
+
+  // ===========================================================================
+  //  MAP INTERACTIONS
+  // ===========================================================================
 
   Future<void> _onMapTap(LatLng point) async {
     if (!mounted) return;
@@ -608,7 +624,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         }
       }
     } catch (e) {
-      debugPrint('❌ Konum bilgisi alma hatası: $e');
+      debugPrint('Location info error: $e');
       _getOfflineLocationInfo(point);
     }
   }
@@ -653,7 +669,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   void _clearSelection() {
     if (!mounted) return;
-
     setState(() {
       selectedLocation = null;
       selectedLocationInfo = null;
@@ -675,15 +690,15 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     });
   }
 
+  // ===========================================================================
+  //  ROUTING
+  // ===========================================================================
+
   String _formatDuration(int minutes) {
-    if (minutes < 60) {
-      return '$minutes dk';
-    }
+    if (minutes < 60) return '$minutes dk';
     final hours = minutes ~/ 60;
     final mins = minutes % 60;
-    if (mins == 0) {
-      return '$hours saat';
-    }
+    if (mins == 0) return '$hours saat';
     return '$hours saat $mins dk';
   }
 
@@ -697,9 +712,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (currentPosition == null || selectedLocation == null) return;
 
     final isOfflineMode = forceOffline || !isOnline;
-    if (isOfflineMode) {
-      return;
-    }
+    if (isOfflineMode) return;
 
     setState(() => isGettingRoute = true);
 
@@ -724,13 +737,130 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         _fitMapToRoute();
       }
     } catch (e) {
-      debugPrint('❌ Rota hatası: $e');
+      debugPrint('Route error: $e');
     } finally {
       if (mounted) {
         setState(() => isGettingRoute = false);
       }
     }
   }
+
+  Future<List<LatLng>> _getOnlineRoute(LatLng start, LatLng end) async {
+    final url = 'https://router.project-osrm.org/route/v1/driving/'
+        '${start.longitude},${start.latitude};'
+        '${end.longitude},${end.latitude}'
+        '?overview=full&geometries=geojson';
+
+    final response =
+        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['routes']?.isNotEmpty == true) {
+        final route = data['routes'][0];
+
+        if (route['distance'] != null && route['duration'] != null) {
+          routeDistance = (route['distance'] / 1000);
+          routeDuration = (route['duration'] / 60).round();
+          arrivalTime = _calculateArrivalTime(routeDuration);
+        }
+
+        return _decodeGeoJsonRoute(route['geometry']);
+      }
+    }
+
+    throw Exception('Route not found');
+  }
+
+  Future<String> _getRouteInfo(LatLng start, LatLng end, bool online) async {
+    if (online && routeDuration > 0 && routeDistance > 0) {
+      return '${routeDistance.toStringAsFixed(1)} km  •  ${_formatDuration(routeDuration)}  •  ${arrivalTime}\'de varış';
+    }
+
+    final distance = Geolocator.distanceBetween(
+          start.latitude,
+          start.longitude,
+          end.latitude,
+          end.longitude,
+        ) /
+        1000;
+
+    final time = (distance / 35 * 60).round();
+    final arrival = _calculateArrivalTime(time);
+
+    return '${distance.toStringAsFixed(1)} km  •  ${_formatDuration(time)}  •  ${arrival}\'de varış';
+  }
+
+  List<LatLng> _decodeGeoJsonRoute(dynamic geometry) {
+    final points = <LatLng>[];
+    try {
+      if (geometry is Map && geometry['coordinates'] is List) {
+        final coords = geometry['coordinates'] as List;
+        for (final coord in coords) {
+          if (coord is List && coord.length >= 2) {
+            final lng = (coord[0] as num).toDouble();
+            final lat = (coord[1] as num).toDouble();
+            // Validate coordinates
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+              points.add(LatLng(lat, lng));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('GeoJSON decode error: $e');
+    }
+    return points;
+  }
+
+  void _fitMapToRoute() {
+    if (!_mapReady ||
+        routePoints.length < 2 ||
+        _mapController == null ||
+        !mounted) {
+      return;
+    }
+
+    try {
+      final bounds = LatLngBounds.fromPoints(routePoints);
+      _mapController!.fitCamera(
+        CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.all(60),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Route fit error: $e');
+    }
+  }
+
+  void _clearRoute() {
+    if (!mounted) return;
+    setState(() {
+      routePoints.clear();
+      routeInfo = '';
+      isNavigating = false;
+      selectedLocation = null;
+      selectedLocationInfo = null;
+      showLocationCard = false;
+      speed = 0;
+      routeDistance = 0;
+      routeDuration = 0;
+      arrivalTime = '';
+    });
+  }
+
+  void _toggleOfflineMode() {
+    if (!mounted) return;
+    setState(() => forceOffline = !forceOffline);
+    if (selectedLocation != null) {
+      _clearSelection();
+    }
+  }
+
+  // ===========================================================================
+  //  SEARCH
+  // ===========================================================================
 
   Future<void> _searchLocation(String query) async {
     if (query.trim().isEmpty || !mounted) return;
@@ -803,7 +933,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         }
       }
     } catch (e) {
-      debugPrint('❌ Arama hatası: $e');
+      debugPrint('Search error: $e');
     } finally {
       if (mounted) {
         setState(() => _isSearching = false);
@@ -840,7 +970,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (!mounted) return;
 
     final location = LatLng(result.latitude, result.longitude);
-
     _mapController?.move(location, 15);
 
     setState(() {
@@ -861,347 +990,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     _locationCardController.forward();
   }
 
-  Widget _buildSosisStatCard(
-      String title, String value, Color color, IconData icon) {
-    return Container(
-      width: 130,
-      height: 70,
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(35),
-        border: Border.all(
-          color: color,
-          width: 2.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 12,
-            offset: const Offset(-3, 3),
-          ),
-          BoxShadow(
-            color: color.withOpacity(0.3),
-            blurRadius: 20,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 26,
-          ),
-          const SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<List<LatLng>> _getOnlineRoute(LatLng start, LatLng end) async {
-    final url = 'https://router.project-osrm.org/route/v1/driving/'
-        '${start.longitude},${start.latitude};'
-        '${end.longitude},${end.latitude}'
-        '?overview=full&geometries=polyline';
-
-    final response =
-        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['routes']?.isNotEmpty == true) {
-        final route = data['routes'][0];
-
-        // Distance ve duration'ı kaydet
-        if (route['distance'] != null && route['duration'] != null) {
-          routeDistance = (route['distance'] / 1000); // metre -> km
-          routeDuration = (route['duration'] / 60).round(); // saniye -> dakika
-          arrivalTime = _calculateArrivalTime(routeDuration);
-        }
-
-        return _decodePolyline(route['geometry']);
-      }
-    }
-
-    throw Exception('Rota bulunamadı');
-  }
-
-  Future<String> _getRouteInfo(LatLng start, LatLng end, bool online) async {
-    if (online && routeDuration > 0 && routeDistance > 0) {
-      return '${routeDistance.toStringAsFixed(1)} km • ${_formatDuration(routeDuration)} • ${arrivalTime}\'de varış';
-    }
-
-    final distance = Geolocator.distanceBetween(
-          start.latitude,
-          start.longitude,
-          end.latitude,
-          end.longitude,
-        ) /
-        1000;
-
-    final time = (distance / 35 * 60).round();
-    final arrival = _calculateArrivalTime(time);
-
-    return '${distance.toStringAsFixed(1)} km • ${_formatDuration(time)} • ${arrival}\'de varış';
-  }
-
-  List<LatLng> _decodePolyline(String encoded) {
-    final points = <LatLng>[];
-    int index = 0;
-    final len = encoded.length;
-    int lat = 0, lng = 0;
-
-    while (index < len) {
-      int shift = 0, result = 0;
-      int b;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-
-      final dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-
-      final dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-      lng += dlng;
-
-      points.add(LatLng(lat / 1e5, lng / 1e5));
-    }
-
-    return points;
-  }
-
-  void _fitMapToRoute() {
-    if (!_mapReady ||
-        routePoints.isEmpty ||
-        _mapController == null ||
-        !mounted) {
-      return;
-    }
-
-    try {
-      final bounds = LatLngBounds.fromPoints(routePoints);
-
-      _mapController!.fitCamera(
-        CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(50),
-        ),
-      );
-    } catch (e) {
-      debugPrint('❌ Route fit hatası: $e');
-    }
-  }
-
-  void _clearRoute() {
-    if (!mounted) return;
-
-    setState(() {
-      routePoints.clear();
-      routeInfo = '';
-      isNavigating = false;
-      selectedLocation = null;
-      selectedLocationInfo = null;
-      showLocationCard = false;
-      speed = 0;
-      routeDistance = 0;
-      routeDuration = 0;
-      arrivalTime = '';
-    });
-  }
-
-  void _toggleOfflineMode() {
-    if (!mounted) return;
-
-    setState(() => forceOffline = !forceOffline);
-    _animateMapTransition();
-
-    if (selectedLocation != null) {
-      _clearSelection();
-    }
-  }
-
-  Widget _buildAnimatedStatsPanel() {
-    final isOfflineMode = forceOffline || !isOnline;
-
-    final List<Map<String, dynamic>> allStats = [
-      {
-        'title': 'KM/H',
-        'value': '$speed',
-        'color': isNavigating ? Colors.green : Colors.grey[400]!,
-        'icon': Icons.speed,
-      },
-      {
-        'title': 'PİL',
-        'value': '$batteryLevel%',
-        'color': _getBatteryColor(),
-        'icon': Icons.battery_std,
-      },
-      {
-        'title': 'SICAK',
-        'value': '${motorTemp}°',
-        'color': _getTemperatureColor(),
-        'icon': Icons.device_thermostat,
-      },
-      {
-        'title': 'SİNYAL',
-        'value': '$signalStrength',
-        'color': _getSignalColor(),
-        'icon': Icons.signal_cellular_alt,
-      },
-      {
-        'title': 'GPS',
-        'value': _getGpsShortStatus(),
-        'color': _getGpsColor(),
-        'icon': Icons.gps_fixed,
-      },
-      {
-        'title': 'MOD',
-        'value': isOfflineMode ? 'OFF' : 'ON',
-        'color': isOfflineMode ? Colors.deepOrange : Colors.cyan,
-        'icon': isOfflineMode ? Icons.offline_bolt : Icons.wifi,
-      },
-    ];
-
-    final startIndex = _currentStatsPage * 3;
-    final currentStats = allStats.skip(startIndex).take(3).toList();
-
-    return AnimatedBuilder(
-      animation: _statsTransitionController,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset((1 - _statsSlideAnimation.value) * 100, 0),
-          child: Opacity(
-            opacity: _statsOpacityAnimation.value,
-            child: Column(
-              children: [
-                for (int i = 0; i < currentStats.length; i++) ...[
-                  Transform.translate(
-                    offset:
-                        Offset(0, (1 - _statsSlideAnimation.value) * (i * 20)),
-                    child: _buildSosisStatCard(
-                      currentStats[i]['title'],
-                      currentStats[i]['value'],
-                      currentStats[i]['color'],
-                      currentStats[i]['icon'],
-                    ),
-                  ),
-                  if (i < currentStats.length - 1) const SizedBox(height: 15),
-                ],
-                const SizedBox(height: 25),
-                GestureDetector(
-                  onTap: () {
-                    _statsTransitionController.reset();
-                    setState(() {
-                      _currentStatsPage = _currentStatsPage == 0 ? 1 : 0;
-                    });
-                    _statsTransitionController.forward();
-                  },
-                  child: Transform.scale(
-                    scale: _statsSlideAnimation.value,
-                    child: Container(
-                      width: 65,
-                      height: 65,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.85),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.7),
-                          width: 2.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.6),
-                            blurRadius: 15,
-                            offset: const Offset(-2, 3),
-                          ),
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.1),
-                            blurRadius: 8,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _currentStatsPage == 0
-                            ? Icons.keyboard_double_arrow_down
-                            : Icons.keyboard_double_arrow_up,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Transform.scale(
-                  scale: _statsSlideAnimation.value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (int i = 0; i < 2; i++)
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: _currentStatsPage == i ? 12 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: _currentStatsPage == i
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.4),
-                            boxShadow: [
-                              if (_currentStatsPage == i)
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.6),
-                                  blurRadius: 8,
-                                  spreadRadius: 1,
-                                ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // ===========================================================================
+  //  STATUS HELPERS
+  // ===========================================================================
 
   String _getGpsShortStatus() {
     if (gpsAccuracy == 'Mükemmel') return 'A+';
@@ -1210,99 +1001,41 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Color _getBatteryColor() {
-    if (batteryLevel > 60) return Colors.green;
-    if (batteryLevel > 30) return Colors.orange;
-    return Colors.red;
+    if (batteryLevel > 60) return _kSuccess;
+    if (batteryLevel > 30) return _kWarning;
+    return _kDanger;
   }
 
   Color _getSignalColor() {
-    if (signalStrength >= 4) return Colors.green;
-    if (signalStrength >= 3) return Colors.orange;
-    return Colors.red;
+    if (signalStrength >= 4) return _kSuccess;
+    if (signalStrength >= 3) return _kWarning;
+    return _kDanger;
   }
 
   Color _getGpsColor() {
-    if (gpsAccuracy == 'Mükemmel') return Colors.green;
-    if (gpsAccuracy == 'İyi') return Colors.orange;
-    return Colors.red;
+    if (gpsAccuracy == 'Mükemmel') return _kSuccess;
+    if (gpsAccuracy == 'İyi') return _kWarning;
+    return _kDanger;
   }
 
   Color _getTemperatureColor() {
-    if (motorTemp > 55) return Colors.red;
-    if (motorTemp > 45) return Colors.orange;
-    return Colors.green;
+    if (motorTemp > 55) return _kDanger;
+    if (motorTemp > 45) return _kWarning;
+    return _kSuccess;
   }
 
-  void _showMapStylePicker() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        margin: const EdgeInsets.all(16),
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.6,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.layers,
-                    color: Colors.grey[700],
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Harita Stili Seç',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...availableLayers.map((layer) => ListTile(
-                          leading: Icon(layer.icon, color: Colors.grey[600]),
-                          title: Text(
-                            layer.name,
-                            style: const TextStyle(),
-                          ),
-                          trailing: currentMapStyle == layer.id
-                              ? const Icon(Icons.check_circle,
-                                  color: Color(0xFF2E7BFF))
-                              : null,
-                          onTap: () {
-                            setState(() => currentMapStyle = layer.id);
-                            _animateMapTransition();
-                            Navigator.pop(context);
-                          },
-                        )),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  IconData _getBatteryIcon() {
+    if (batteryLevel > 80) return Icons.battery_full_rounded;
+    if (batteryLevel > 60) return Icons.battery_5_bar_rounded;
+    if (batteryLevel > 40) return Icons.battery_4_bar_rounded;
+    if (batteryLevel > 20) return Icons.battery_2_bar_rounded;
+    return Icons.battery_alert_rounded;
   }
 
   String _getMapTileUrl(bool isOfflineMode) {
     switch (currentMapStyle) {
+      case 'dark':
+        return 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
       case 'satellite':
         return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
       case 'terrain':
@@ -1311,6 +1044,142 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     }
   }
+
+  // ===========================================================================
+  //  MAP STYLE PICKER
+  // ===========================================================================
+
+  void _showMapStylePicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _kSurface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white.withOpacity(0.06)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.5),
+              blurRadius: 30,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _kPrimary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.layers_rounded,
+                        color: _kPrimary, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Harita Stili',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.06),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(Icons.close_rounded,
+                          color: Colors.white.withOpacity(0.4), size: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 1,
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              color: Colors.white.withOpacity(0.04),
+            ),
+            const SizedBox(height: 4),
+            ...availableLayers.map((layer) {
+              final isSelected = currentMapStyle == layer.id;
+              return Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? _kPrimary.withOpacity(0.08)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: ListTile(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  leading: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? _kPrimary.withOpacity(0.15)
+                          : Colors.white.withOpacity(0.04),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      layer.icon,
+                      color: isSelected
+                          ? _kPrimary
+                          : Colors.white.withOpacity(0.5),
+                      size: 20,
+                    ),
+                  ),
+                  title: Text(
+                    layer.name,
+                    style: TextStyle(
+                      color: isSelected ? _kPrimary : Colors.white,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontSize: 15,
+                    ),
+                  ),
+                  trailing: isSelected
+                      ? const Icon(Icons.check_circle_rounded,
+                          color: _kPrimary, size: 22)
+                      : null,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  onTap: () {
+                    setState(() => currentMapStyle = layer.id);
+                    _animateMapTransition();
+                    Navigator.pop(context);
+                  },
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===========================================================================
+  //  DISPOSE
+  // ===========================================================================
 
   @override
   void dispose() {
@@ -1328,25 +1197,877 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // ===========================================================================
+  //  UI BUILDER METHODS
+  // ===========================================================================
+
+  // ── Glass Icon Button ──
+  Widget _buildGlassIconButton(IconData icon, VoidCallback onTap,
+      {double size = 38}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.06),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.white.withOpacity(0.08)),
+        ),
+        child: Icon(icon, color: Colors.white.withOpacity(0.6), size: size * 0.47),
+      ),
+    );
+  }
+
+  // ── Gradient Action Button ──
+  Widget _buildGradientButton({
+    required String label,
+    IconData? icon,
+    bool isLoading = false,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          gradient: onTap != null
+              ? const LinearGradient(
+                  colors: [_kPrimary, _kAccent],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                )
+              : null,
+          color: onTap == null ? Colors.white.withOpacity(0.06) : null,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: onTap != null
+              ? [
+                  BoxShadow(
+                    color: _kPrimary.withOpacity(0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isLoading)
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            else if (icon != null)
+              Icon(icon, color: Colors.white, size: 18),
+            if (icon != null || isLoading) const SizedBox(width: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Control Button (right sidebar) ──
+  Widget _buildControlButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    bool isActive = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive ? color.withOpacity(0.15) : Colors.transparent,
+        ),
+        child: Icon(icon, color: color, size: 22),
+      ),
+    );
+  }
+
+  // ── Current Location Marker ──
+  Marker _buildCurrentLocationMarker(bool isOfflineMode) {
+    final color = isOfflineMode ? _kWarning : _kPrimary;
+    return Marker(
+      point: LatLng(currentPosition!.latitude, currentPosition!.longitude),
+      width: 60,
+      height: 60,
+      child: AnimatedBuilder(
+        animation: _pulseAnimation,
+        builder: (context, child) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer ring pulse
+              Container(
+                width: 60 * (1 + _pulseAnimation.value * 0.4),
+                height: 60 * (1 + _pulseAnimation.value * 0.4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color:
+                        color.withOpacity(0.4 * (1 - _pulseAnimation.value)),
+                    width: 1.5,
+                  ),
+                ),
+              ),
+              // Middle glow
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color.withOpacity(0.12),
+                ),
+              ),
+              // Core dot
+              Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                  border: Border.all(color: Colors.white, width: 2.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.6),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // ── Selected Location Marker ──
+  Marker _buildSelectedLocationMarker(bool isOfflineMode) {
+    final color = isOfflineMode ? _kDanger : _kAccent;
+    return Marker(
+      point: selectedLocation!,
+      width: 48,
+      height: 48,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2.5),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.5),
+              blurRadius: 14,
+              spreadRadius: 3,
+            ),
+          ],
+        ),
+        child: const Icon(Icons.place_rounded, color: Colors.white, size: 24),
+      ),
+    );
+  }
+
+  // ── Top Bar (Search or Route) ──
+  Widget _buildTopBar(bool isOfflineMode) {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 16,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 580),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: isOfflineMode
+              ? (routeInfo.isNotEmpty
+                  ? _buildRouteInfoBar()
+                  : _buildOfflineBanner())
+              : (routeInfo.isNotEmpty
+                  ? _buildRouteInfoBar()
+                  : _buildSearchBar()),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOfflineBanner() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: _kSurface.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _kWarning.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 20,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.wifi_off_rounded, color: _kWarning, size: 18),
+          const SizedBox(width: 10),
+          Text(
+            'Çevrimdışı Mod',
+            style: TextStyle(
+              color: _kWarning.withOpacity(0.9),
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Route Info Bar ──
+  Widget _buildRouteInfoBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: _kSurface.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _kPrimary.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 20,
+          ),
+          BoxShadow(
+            color: _kPrimary.withOpacity(0.08),
+            blurRadius: 30,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: _kPrimary.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.navigation_rounded,
+                color: _kPrimary, size: 18),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Text(
+              routeInfo,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          _buildGlassIconButton(Icons.close_rounded, _clearRoute, size: 34),
+        ],
+      ),
+    );
+  }
+
+  // ── Search Bar ──
+  Widget _buildSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: _kSurface.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            blurRadius: 20,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _searchController,
+            focusNode: _searchFocusNode,
+            decoration: InputDecoration(
+              hintText: 'Konum ara...',
+              hintStyle: TextStyle(
+                color: Colors.white.withOpacity(0.25),
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+              ),
+              prefixIcon: _isSearching
+                  ? Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              const AlwaysStoppedAnimation<Color>(_kPrimary),
+                          backgroundColor: Colors.white.withOpacity(0.06),
+                        ),
+                      ),
+                    )
+                  : Icon(Icons.search_rounded,
+                      color: Colors.white.withOpacity(0.3), size: 22),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.close_rounded,
+                          color: Colors.white.withOpacity(0.3), size: 20),
+                      onPressed: _clearSearch,
+                    )
+                  : null,
+              border: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            ),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+            ),
+            cursorColor: _kPrimary,
+            onSubmitted: _searchLocation,
+            onChanged: _onSearchChanged,
+          ),
+          // Search Results
+          if (_searchResults.isNotEmpty)
+            Container(
+              constraints: const BoxConstraints(maxHeight: 300),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.white.withOpacity(0.04)),
+                ),
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                itemCount: _searchResults.length,
+                itemBuilder: (context, index) {
+                  final result = _searchResults[index];
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _goToSearchResult(result),
+                      borderRadius: BorderRadius.circular(12),
+                      splashColor: _kPrimary.withOpacity(0.08),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: _kPrimary.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.place_rounded,
+                                  color: _kPrimary, size: 18),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    result.shortName.isNotEmpty
+                                        ? result.shortName
+                                        : result.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  if (result.type.isNotEmpty)
+                                    Text(
+                                      result.type,
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.35),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Icon(Icons.arrow_forward_ios_rounded,
+                                color: Colors.white.withOpacity(0.15),
+                                size: 14),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ── Right Controls ──
+  Widget _buildRightControls(bool isOfflineMode) {
+    return Positioned(
+      right: 20,
+      top: MediaQuery.of(context).padding.top + 100,
+      child: SlideTransition(
+        position: _sidebarSlideAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            color: _kSurface.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: Colors.white.withOpacity(0.06)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildControlButton(
+                icon: isOfflineMode
+                    ? Icons.wifi_off_rounded
+                    : Icons.wifi_rounded,
+                color: isOfflineMode ? _kWarning : _kPrimary,
+                onTap: _toggleOfflineMode,
+                isActive: isOfflineMode,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Container(
+                  width: 24,
+                  height: 1,
+                  color: Colors.white.withOpacity(0.06),
+                ),
+              ),
+              _buildControlButton(
+                icon: Icons.my_location_rounded,
+                color: _kPrimary,
+                onTap: _getCurrentLocation,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Container(
+                  width: 24,
+                  height: 1,
+                  color: Colors.white.withOpacity(0.06),
+                ),
+              ),
+              _buildControlButton(
+                icon: Icons.layers_rounded,
+                color: _kSuccess,
+                onTap: _showMapStylePicker,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Bottom HUD ──
+  Widget _buildBottomHUD(bool isOfflineMode) {
+    return Positioned(
+      bottom: 20,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: AnimatedBuilder(
+          animation: _statsTransitionController,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, (1 - _statsSlideAnimation.value) * 80),
+              child: Opacity(
+                opacity: _statsOpacityAnimation.value,
+                child: child,
+              ),
+            );
+          },
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 820),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            decoration: BoxDecoration(
+              color: _kSurface.withOpacity(0.92),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 30,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildHudStat(
+                  icon: Icons.speed_rounded,
+                  value: '$speed',
+                  unit: 'km/h',
+                  color: isNavigating ? _kSuccess : Colors.white.withOpacity(0.35),
+                ),
+                _buildHudDivider(),
+                _buildHudStat(
+                  icon: _getBatteryIcon(),
+                  value: '$batteryLevel',
+                  unit: '%',
+                  color: _getBatteryColor(),
+                ),
+                _buildHudDivider(),
+                _buildHudStat(
+                  icon: Icons.thermostat_rounded,
+                  value: '$motorTemp',
+                  unit: '°C',
+                  color: _getTemperatureColor(),
+                ),
+                _buildHudDivider(),
+                _buildHudStat(
+                  icon: Icons.signal_cellular_alt_rounded,
+                  value: '$signalStrength',
+                  unit: '/5',
+                  color: _getSignalColor(),
+                ),
+                _buildHudDivider(),
+                _buildHudStat(
+                  icon: Icons.gps_fixed_rounded,
+                  value: _getGpsShortStatus(),
+                  unit: 'GPS',
+                  color: _getGpsColor(),
+                ),
+                _buildHudDivider(),
+                _buildHudStat(
+                  icon: isOfflineMode
+                      ? Icons.wifi_off_rounded
+                      : Icons.wifi_rounded,
+                  value: isOfflineMode ? 'OFF' : 'ON',
+                  unit: 'Net',
+                  color: isOfflineMode ? _kWarning : _kPrimary,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHudStat({
+    required IconData icon,
+    required String value,
+    required String unit,
+    required Color color,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 17),
+        const SizedBox(height: 5),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(width: 2),
+            Text(
+              unit,
+              style: TextStyle(
+                color: color.withOpacity(0.45),
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHudDivider() {
+    return Container(
+      width: 1,
+      height: 30,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      color: Colors.white.withOpacity(0.05),
+    );
+  }
+
+  // ── Location Card ──
+  Widget _buildLocationCard(bool isOfflineMode) {
+    final accentColor = isOfflineMode ? _kWarning : _kPrimary;
+
+    return AnimatedBuilder(
+      animation: _locationCardController,
+      builder: (context, child) {
+        return Positioned(
+          left: 24,
+          bottom: 110,
+          child: Transform.translate(
+            offset: Offset(0, (1 - _locationCardController.value) * 200),
+            child: Opacity(
+              opacity: _locationCardController.value,
+              child: Container(
+                width: 400,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: _kSurface.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(22),
+                  border:
+                      Border.all(color: accentColor.withOpacity(0.12)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 30,
+                      offset: const Offset(0, 8),
+                    ),
+                    BoxShadow(
+                      color: accentColor.withOpacity(0.05),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            isOfflineMode
+                                ? Icons.location_pin
+                                : Icons.place_rounded,
+                            color: accentColor,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedLocationInfo?.name ??
+                                    'Konum Yükleniyor...',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  letterSpacing: 0.2,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (selectedLocationInfo
+                                      ?.category.isNotEmpty ==
+                                  true)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 3),
+                                  child: Text(
+                                    selectedLocationInfo!.category,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: accentColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        _buildGlassIconButton(
+                            Icons.close_rounded, _hideLocationCard,
+                            size: 34),
+                      ],
+                    ),
+                    if (selectedLocationInfo != null) ...[
+                      // Divider
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Container(
+                          height: 1,
+                          color: Colors.white.withOpacity(0.05),
+                        ),
+                      ),
+                      // Address
+                      if (selectedLocationInfo!.address.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            selectedLocationInfo!.address,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.55),
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      // Coordinates
+                      Row(
+                        children: [
+                          Icon(Icons.tag_rounded,
+                              color: Colors.white.withOpacity(0.2),
+                              size: 14),
+                          const SizedBox(width: 6),
+                          Text(
+                            selectedLocationInfo!.coordinates,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.3),
+                              fontSize: 12,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      // Actions
+                      if (!isOfflineMode)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildGradientButton(
+                                label: isGettingRoute
+                                    ? 'Hesaplanıyor...'
+                                    : 'Rota Hesapla',
+                                icon: isGettingRoute
+                                    ? null
+                                    : Icons.navigation_rounded,
+                                isLoading: isGettingRoute,
+                                onTap:
+                                    isGettingRoute ? null : _calculateRoute,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            _buildGlassIconButton(
+                                Icons.close_rounded, _clearSelection,
+                                size: 46),
+                          ],
+                        )
+                      else
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: _kWarning.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                                color: _kWarning.withOpacity(0.12)),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.wifi_off_rounded,
+                                  color: _kWarning.withOpacity(0.7),
+                                  size: 18),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Çevrimdışı — sadece koordinat bilgisi',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: _kWarning.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _clearSelection,
+                                child: Icon(Icons.close_rounded,
+                                    color: _kWarning.withOpacity(0.4),
+                                    size: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ===========================================================================
+  //  BUILD
+  // ===========================================================================
+
   @override
   Widget build(BuildContext context) {
+    // Loading State
     if (_isInitializing) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: _kBg,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2E7BFF)),
+              SizedBox(
+                width: 48,
+                height: 48,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: const AlwaysStoppedAnimation<Color>(_kPrimary),
+                  backgroundColor: Colors.white.withOpacity(0.04),
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               Text(
-                'Harita Yükleniyor...',
+                'HARİTA YÜKLENİYOR',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[700],
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withOpacity(0.35),
+                  letterSpacing: 3,
                 ),
               ),
             ],
@@ -1358,679 +2079,75 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final isOfflineMode = forceOffline || !isOnline;
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: _kBg,
       body: Stack(
         children: [
-          // Main Map
+          // ── MAP ──
           Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _mapFadeAnimation,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _isTransitioning ? _mapFadeAnimation.value : 1.0,
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: const LatLng(41.0082, 28.9784),
-                      initialZoom: 13,
-                      minZoom: 3,
-                      maxZoom: 18,
-                      onTap: (_, point) => _onMapTap(point),
-                      onMapReady: _onMapReady,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: _getMapTileUrl(isOfflineMode),
-                        maxZoom: 18,
-                        userAgentPackageName: 'com.modernmaps.app',
-                        errorTileCallback: (tile, error, stackTrace) {},
-                      ),
-                      if (routePoints.isNotEmpty && !isOfflineMode)
-                        PolylineLayer(
-                          polylines: [
-                            Polyline(
-                              points: routePoints,
-                              strokeWidth: 4,
-                              color: const Color(0xFF2E7BFF),
-                              borderStrokeWidth: 2,
-                              borderColor: Colors.white,
-                            ),
-                          ],
-                        ),
-                      MarkerLayer(
-                        markers: [
-                          if (currentPosition != null)
-                            Marker(
-                              point: LatLng(
-                                currentPosition!.latitude,
-                                currentPosition!.longitude,
-                              ),
-                              width: 50,
-                              height: 50,
-                              child: AnimatedBuilder(
-                                animation: _pulseAnimation,
-                                builder: (context, child) {
-                                  return Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                        width: 50 *
-                                            (1 + _pulseAnimation.value * 0.3),
-                                        height: 50 *
-                                            (1 + _pulseAnimation.value * 0.3),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: (isOfflineMode
-                                                  ? Colors.orange
-                                                  : Colors.blue)
-                                              .withOpacity(0.3 *
-                                                  (1 - _pulseAnimation.value)),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: isOfflineMode
-                                              ? Colors.orange
-                                              : Colors.blue,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: Colors.white, width: 2),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 4,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          isOfflineMode
-                                              ? Icons.offline_pin
-                                              : Icons.navigation,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          if (selectedLocation != null)
-                            Marker(
-                              point: selectedLocation!,
-                              width: 40,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: isOfflineMode
-                                      ? Colors.deepOrange
-                                      : Colors.red,
-                                  shape: BoxShape.circle,
-                                  border:
-                                      Border.all(color: Colors.white, width: 2),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  isOfflineMode
-                                      ? Icons.location_pin
-                                      : Icons.place,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                        ],
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: const LatLng(41.0082, 28.9784),
+                initialZoom: 13,
+                minZoom: 3,
+                maxZoom: 18,
+                onTap: (_, point) => _onMapTap(point),
+                onMapReady: _onMapReady,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: _getMapTileUrl(isOfflineMode),
+                  maxZoom: 18,
+                  userAgentPackageName: 'com.modernmaps.app',
+                  errorTileCallback: (tile, error, stackTrace) {},
+                ),
+                // Route line
+                if (routePoints.length >= 2 && !isOfflineMode)
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: routePoints,
+                        strokeWidth: 4.5,
+                        color: _kPrimary,
+                        borderStrokeWidth: 3,
+                        borderColor: _kPrimary.withOpacity(0.25),
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-
-          // Top Bar - Search veya Route Info
-          if (!isOfflineMode)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 16,
-              left: 16,
-              right: 150,
-              child: routeInfo.isNotEmpty
-                  ? Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2E7BFF).withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.navigation,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              routeInfo,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _clearRoute,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 20,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.grey[50]!,
-                                  Colors.white,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              focusNode: _searchFocusNode,
-                              decoration: InputDecoration(
-                                hintText: 'Konum ara...',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontSize: 16,
-                                ),
-                                prefixIcon: _isSearching
-                                    ? const Padding(
-                                        padding: EdgeInsets.all(16),
-                                        child: SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Color(0xFF2E7BFF)),
-                                          ),
-                                        ),
-                                      )
-                                    : Icon(Icons.search,
-                                        color: Colors.grey[600], size: 24),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: Icon(Icons.clear,
-                                            color: Colors.grey[600]),
-                                        onPressed: _clearSearch,
-                                        splashRadius: 20,
-                                      )
-                                    : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 16,
-                                ),
-                              ),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              onSubmitted: _searchLocation,
-                              onChanged: _onSearchChanged,
-                            ),
-                          ),
-                          if (_searchResults.isNotEmpty)
-                            Container(
-                              constraints: const BoxConstraints(maxHeight: 250),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  itemCount: _searchResults.length,
-                                  separatorBuilder: (context, index) => Divider(
-                                    height: 1,
-                                    color: Colors.grey[200],
-                                    indent: 16,
-                                    endIndent: 16,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    final result = _searchResults[index];
-                                    return ListTile(
-                                      dense: true,
-                                      leading: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF2E7BFF)
-                                              .withOpacity(0.1),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: const Icon(
-                                          Icons.place,
-                                          color: Color(0xFF2E7BFF),
-                                          size: 20,
-                                        ),
-                                      ),
-                                      title: Text(
-                                        result.shortName.isNotEmpty
-                                            ? result.shortName
-                                            : result.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          if (result.type.isNotEmpty)
-                                            Text(
-                                              result.type,
-                                              style: TextStyle(
-                                                color: Colors.grey[600],
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          if (result.shortName.isNotEmpty)
-                                            Text(
-                                              result.name,
-                                              style: TextStyle(
-                                                color: Colors.grey[500],
-                                                fontSize: 12,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                        ],
-                                      ),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: Colors.grey[400],
-                                        size: 16,
-                                      ),
-                                      onTap: () => _goToSearchResult(result),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-            ),
-
-          // Sağ Stats Panel
-          Positioned(
-            right: 16,
-            top: MediaQuery.of(context).padding.top + 80,
-            child: SlideTransition(
-              position: _sidebarSlideAnimation,
-              child: _buildAnimatedStatsPanel(),
-            ),
-          ),
-
-          // Sol Alt Kontroller
-          Positioned(
-            left: 16,
-            bottom: 16,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FloatingActionButton(
-                  onPressed: _toggleOfflineMode,
-                  backgroundColor:
-                      isOfflineMode ? Colors.deepOrange : Colors.cyan,
-                  elevation: 8,
-                  child: Icon(
-                    isOfflineMode ? Icons.offline_bolt : Icons.wifi,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                FloatingActionButton(
-                  onPressed: _getCurrentLocation,
-                  backgroundColor: isOfflineMode
-                      ? Colors.deepOrange
-                      : const Color(0xFF2E7BFF),
-                  elevation: 8,
-                  child: Icon(
-                    isOfflineMode
-                        ? Icons.my_location_outlined
-                        : Icons.my_location,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                FloatingActionButton(
-                  onPressed: _showMapStylePicker,
-                  backgroundColor: Colors.green,
-                  mini: true,
-                  elevation: 6,
-                  child: const Icon(Icons.layers, color: Colors.white),
+                // Markers
+                MarkerLayer(
+                  markers: [
+                    if (currentPosition != null)
+                      _buildCurrentLocationMarker(isOfflineMode),
+                    if (selectedLocation != null)
+                      _buildSelectedLocationMarker(isOfflineMode),
+                  ],
                 ),
               ],
             ),
           ),
 
-          // Location Card
-          if (showLocationCard)
-            AnimatedBuilder(
-              animation: _locationCardController,
-              builder: (context, child) {
-                return Positioned(
-                  left: 16,
-                  right: 150,
-                  bottom: 16,
-                  child: Transform.translate(
-                    offset:
-                        Offset(0, (1 - _locationCardController.value) * 250),
-                    child: Opacity(
-                      opacity: _locationCardController.value,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: isOfflineMode
-                                          ? Colors.deepOrange.withOpacity(0.1)
-                                          : Colors.blue.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      isOfflineMode
-                                          ? Icons.location_pin
-                                          : Icons.place,
-                                      color: isOfflineMode
-                                          ? Colors.deepOrange
-                                          : Colors.blue,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          selectedLocationInfo?.name ??
-                                              'Konum Yükleniyor...',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        if (selectedLocationInfo
-                                                ?.category.isNotEmpty ==
-                                            true)
-                                          Text(
-                                            selectedLocationInfo!.category,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: isOfflineMode
-                                                  ? Colors.deepOrange
-                                                  : Colors.blue,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: _hideLocationCard,
-                                    icon: const Icon(Icons.close),
-                                    iconSize: 20,
-                                  ),
-                                ],
-                              ),
-                              if (selectedLocationInfo != null) ...[
-                                const SizedBox(height: 12),
-                                if (selectedLocationInfo!.address.isNotEmpty)
-                                  Text(
-                                    selectedLocationInfo!.address,
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  selectedLocationInfo!.coordinates,
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                if (!isOfflineMode)
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton.icon(
-                                          onPressed: isGettingRoute
-                                              ? null
-                                              : _calculateRoute,
-                                          icon: isGettingRoute
-                                              ? const SizedBox(
-                                                  width: 16,
-                                                  height: 16,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            Colors.white),
-                                                  ),
-                                                )
-                                              : const Icon(
-                                                  Icons.navigation,
-                                                  size: 16,
-                                                ),
-                                          label: Text(
-                                            isGettingRoute
-                                                ? 'Hesaplanıyor...'
-                                                : 'Rota Hesapla',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color(0xFF2E7BFF),
-                                            foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 14),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            elevation: 4,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      OutlinedButton(
-                                        onPressed: _clearSelection,
-                                        style: OutlinedButton.styleFrom(
-                                          padding: const EdgeInsets.all(14),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          side: const BorderSide(
-                                            color: Color(0xFF2E7BFF),
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.clear,
-                                          color: Color(0xFF2E7BFF),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                else
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.orange.withOpacity(0.3),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.offline_pin,
-                                          color: Colors.orange,
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Offline Mod',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.orange[700],
-                                                ),
-                                              ),
-                                              Text(
-                                                'Sadece koordinat bilgisi mevcut',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.orange[600],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: _clearSelection,
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.orange[700],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+          // ── TOP BAR ──
+          _buildTopBar(isOfflineMode),
+
+          // ── RIGHT CONTROLS ──
+          _buildRightControls(isOfflineMode),
+
+          // ── BOTTOM HUD ──
+          _buildBottomHUD(isOfflineMode),
+
+          // ── LOCATION CARD ──
+          if (showLocationCard) _buildLocationCard(isOfflineMode),
         ],
       ),
     );
   }
 }
 
-// Model Sınıfları
+// =============================================================================
+//  MODELS
+// =============================================================================
+
 class MapLayer {
   final String id;
   final String name;
