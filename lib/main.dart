@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
@@ -31,13 +30,109 @@ class MyApp extends StatelessWidget {
           seedColor: const Color(0xFF2E7BFF),
           brightness: Brightness.light,
         ),
-        textTheme: GoogleFonts.goldmanTextTheme(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const MapPage(),
+      home: const SplashScreen(),
     );
   }
 }
+
+// ─── Splash Screen ───────────────────────────────────────────────────────────
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.65, curve: Curves.easeOut),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.65, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    // Start animation after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.forward();
+    });
+
+    // Navigate to MapPage after ~2 seconds
+    Future.delayed(const Duration(milliseconds: 2200), () {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const MapPage(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Opacity(
+              opacity: _fadeAnimation.value,
+              child: Transform.scale(
+                scale: _scaleAnimation.value,
+                child: child,
+              ),
+            );
+          },
+          child: Image.asset(
+            'assets/logo.png',
+            width: 420,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.medium,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Map Page ────────────────────────────────────────────────────────────────
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -806,7 +901,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             children: [
               Text(
                 value,
-                style: GoogleFonts.goldman(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -814,7 +909,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               ),
               Text(
                 title,
-                style: GoogleFonts.goldman(
+                style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
@@ -1166,7 +1261,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                   const SizedBox(width: 12),
                   Text(
                     'Harita Stili Seç',
-                    style: GoogleFonts.goldman(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1183,7 +1278,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           leading: Icon(layer.icon, color: Colors.grey[600]),
                           title: Text(
                             layer.name,
-                            style: GoogleFonts.goldman(),
+                            style: const TextStyle(),
                           ),
                           trailing: currentMapStyle == layer.id
                               ? const Icon(Icons.check_circle,
@@ -1248,7 +1343,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               const SizedBox(height: 16),
               Text(
                 'Harita Yükleniyor...',
-                style: GoogleFonts.goldman(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Colors.grey[700],
@@ -1433,7 +1528,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           Expanded(
                             child: Text(
                               routeInfo,
-                              style: GoogleFonts.goldman(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 15,
@@ -1489,7 +1584,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               focusNode: _searchFocusNode,
                               decoration: InputDecoration(
                                 hintText: 'Konum ara...',
-                                hintStyle: GoogleFonts.goldman(
+                                hintStyle: TextStyle(
                                   color: Colors.grey[500],
                                   fontSize: 16,
                                 ),
@@ -1528,7 +1623,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                   vertical: 16,
                                 ),
                               ),
-                              style: GoogleFonts.goldman(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -1592,7 +1687,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                         result.shortName.isNotEmpty
                                             ? result.shortName
                                             : result.name,
-                                        style: GoogleFonts.goldman(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 15,
                                         ),
@@ -1606,7 +1701,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                           if (result.type.isNotEmpty)
                                             Text(
                                               result.type,
-                                              style: GoogleFonts.goldman(
+                                              style: TextStyle(
                                                 color: Colors.grey[600],
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,
@@ -1615,7 +1710,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                           if (result.shortName.isNotEmpty)
                                             Text(
                                               result.name,
-                                              style: GoogleFonts.goldman(
+                                              style: TextStyle(
                                                 color: Colors.grey[500],
                                                 fontSize: 12,
                                               ),
@@ -1754,7 +1849,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                         Text(
                                           selectedLocationInfo?.name ??
                                               'Konum Yükleniyor...',
-                                          style: GoogleFonts.goldman(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1764,7 +1859,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                             true)
                                           Text(
                                             selectedLocationInfo!.category,
-                                            style: GoogleFonts.goldman(
+                                            style: TextStyle(
                                               fontSize: 12,
                                               color: isOfflineMode
                                                   ? Colors.deepOrange
@@ -1787,7 +1882,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                 if (selectedLocationInfo!.address.isNotEmpty)
                                   Text(
                                     selectedLocationInfo!.address,
-                                    style: GoogleFonts.goldman(
+                                    style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 14,
                                     ),
@@ -1795,7 +1890,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                 const SizedBox(height: 8),
                                 Text(
                                   selectedLocationInfo!.coordinates,
-                                  style: GoogleFonts.goldman(
+                                  style: TextStyle(
                                     color: Colors.grey[500],
                                     fontSize: 12,
                                   ),
@@ -1830,7 +1925,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                             isGettingRoute
                                                 ? 'Hesaplanıyor...'
                                                 : 'Rota Hesapla',
-                                            style: GoogleFonts.goldman(
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -1894,14 +1989,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                             children: [
                                               Text(
                                                 'Offline Mod',
-                                                style: GoogleFonts.goldman(
+                                                style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.orange[700],
                                                 ),
                                               ),
                                               Text(
                                                 'Sadece koordinat bilgisi mevcut',
-                                                style: GoogleFonts.goldman(
+                                                style: TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.orange[600],
                                                 ),

@@ -25,7 +25,6 @@ dependencies:
 
   # Icons
   cupertino_icons: ^1.0.8
-  google_fonts: ^6.1.0
 
   cached_network_image: ^3.3.1
 
@@ -36,3 +35,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/logo.png
