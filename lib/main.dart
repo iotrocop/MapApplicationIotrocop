@@ -178,12 +178,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   late Animation<double> _statsSlideAnimation;
   late Animation<double> _statsOpacityAnimation;
 
-  // Timers
+  // Timers and Subscriptions
   Timer? _locationTimer;
   Timer? _dataUpdateTimer;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
-  // Core State
+  // Core State fields
   bool isOnline = true;
   bool forceOffline = false;
   bool _isInitializing = true;
@@ -222,7 +222,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     MapLayer('terrain', 'Arazi', Icons.terrain_rounded),
   ];
 
-  // Search state
+  // Search state fields
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
   List<SearchResult> _searchResults = [];
@@ -232,7 +232,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   int _currentStatsPage = 0;
 
   // ===========================================================================
-  //  LIFECYCLE & INITIALIZATION
+  //  LIFECYCLE & INITIALIZATION functions
   // ===========================================================================
 
   @override
