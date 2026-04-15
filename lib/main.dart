@@ -63,37 +63,147 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
+  late Animation<double> _bgPulseAnimation;
+  late Animation<double> _s1OpacityAnimation;
+  late Animation<double> _s1ScaleAnimation;
+  late Animation<double> _s1RotationAnimation;
+  late Animation<double> _s2OpacityAnimation;
+  late Animation<double> _s2ScaleAnimation;
+  late Animation<double> _s2TranslationAnimation;
+  late Animation<double> _s2StreakOffsetAnimation;
+  late Animation<double> _s2StreakOpacityAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2300),
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _bgPulseAnimation = Tween<double>(begin: 0.92, end: 1.08).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.65, curve: Curves.easeOut),
+        curve: const Interval(0.0, 1.0, curve: Curves.easeInOut),
       ),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+    _s1OpacityAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 45,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        weight: 55,
+      ),
+    ]).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.65, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.62, curve: Curves.easeInOut),
       ),
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.forward();
-    });
+    _s1ScaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.84, end: 1.04)
+            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        weight: 65,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.04, end: 1.2)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 35,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.62),
+      ),
+    );
 
-    Future.delayed(const Duration(milliseconds: 2200), () {
-      if (mounted) {
+    _s1RotationAnimation = Tween<double>(begin: -0.02, end: 0.04).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.12, 0.62, curve: Curves.easeInOut),
+      ),
+    );
+
+    _s2OpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.42, 0.82, curve: Curves.easeOut),
+      ),
+    );
+
+    _s2ScaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.34, end: 0.94)
+            .chain(CurveTween(curve: Curves.easeOutExpo)),
+        weight: 70,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.94, end: 1.03)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 15,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.03, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 15,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.44, 1.0),
+      ),
+    );
+
+    _s2TranslationAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 36.0, end: -8.0)
+            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        weight: 78,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: -8.0, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 22,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.44, 1.0),
+      ),
+    );
+
+    _s2StreakOffsetAnimation = Tween<double>(begin: -1.35, end: 1.35).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.47, 0.69, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _s2StreakOpacityAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 0.95)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 30,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.95, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 70,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.47, 0.75),
+      ),
+    );
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
@@ -102,10 +212,14 @@ class _SplashScreenState extends State<SplashScreen>
                 (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
-            transitionDuration: const Duration(milliseconds: 600),
+            transitionDuration: const Duration(milliseconds: 550),
           ),
         );
       }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.forward();
     });
   }
 
@@ -115,34 +229,200 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
+  Widget _buildFeatheredSplashImage({
+    required String asset,
+    required double width,
+    required double darkness,
+  }) {
+    final image = ColorFiltered(
+      colorFilter: ColorFilter.mode(
+        Colors.black.withOpacity(darkness),
+        BlendMode.darken,
+      ),
+      child: Image.asset(
+        asset,
+        width: width,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.high,
+      ),
+    );
+
+    return SizedBox(
+      width: width,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ShaderMask(
+            blendMode: BlendMode.dstIn,
+            shaderCallback: (rect) {
+              return const RadialGradient(
+                center: Alignment(0, -0.03),
+                radius: 0.78,
+                colors: [
+                  Colors.white,
+                  Colors.white,
+                  Color(0xBBFFFFFF),
+                  Colors.transparent,
+                ],
+                stops: [0.0, 0.44, 0.7, 1.0],
+              ).createShader(rect);
+            },
+            child: image,
+          ),
+          IgnorePointer(
+            child: Container(
+              width: width,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(0, -0.03),
+                  radius: 0.82,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.22),
+                    Colors.black.withOpacity(0.56),
+                  ],
+                  stops: const [0.54, 0.8, 1.0],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final logoWidth = math.min(420.0, screenWidth * 0.5);
+
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Opacity(
-              opacity: _fadeAnimation.value,
-              child: Transform.scale(
-                scale: _scaleAnimation.value,
-                child: child,
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF020202),
+                      Color(0xFF0B0B0B),
+                      Color(0xFF171717),
+                    ],
+                  ),
+                ),
               ),
-            );
-          },
-          child: Image.asset(
-            'assets/logo.png',
-            width: 420,
-            fit: BoxFit.contain,
-            filterQuality: FilterQuality.medium,
-          ),
-        ),
+              Center(
+                child: Transform.scale(
+                  scale: _bgPulseAnimation.value,
+                  child: Container(
+                    width: logoWidth * 1.32,
+                    height: logoWidth * 1.32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          const Color(0xFFFFFFFF).withOpacity(0.12),
+                          const Color(0xFFB0B0B0).withOpacity(0.06),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.55, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Opacity(
+                  opacity: _s1OpacityAnimation.value,
+                  child: Transform.rotate(
+                    angle: _s1RotationAnimation.value,
+                    child: Transform.scale(
+                      scale: _s1ScaleAnimation.value,
+                      child: _buildFeatheredSplashImage(
+                        asset: 'assets/S1.png',
+                        width: logoWidth,
+                        darkness: 0.24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Opacity(
+                  opacity: _s2OpacityAnimation.value,
+                  child: Transform.translate(
+                    offset: Offset(
+                      _s2StreakOffsetAnimation.value * logoWidth,
+                      _s2TranslationAnimation.value - (logoWidth * 0.04),
+                    ),
+                    child: Opacity(
+                      opacity: _s2StreakOpacityAnimation.value,
+                      child: Transform.rotate(
+                        angle: -0.16,
+                        child: Container(
+                          width: logoWidth * 1.25,
+                          height: logoWidth * 0.22,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                Colors.transparent,
+                                Colors.white.withOpacity(0.04),
+                                Colors.white.withOpacity(0.32),
+                                Colors.white.withOpacity(0.06),
+                                Colors.transparent,
+                              ],
+                              stops: const [0.0, 0.32, 0.5, 0.68, 1.0],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.18),
+                                blurRadius: 22,
+                                spreadRadius: 1,
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.65),
+                                blurRadius: 26,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Opacity(
+                  opacity: _s2OpacityAnimation.value,
+                  child: Transform.translate(
+                    offset: Offset(0, _s2TranslationAnimation.value),
+                    child: Transform.scale(
+                      scale: _s2ScaleAnimation.value,
+                      child: _buildFeatheredSplashImage(
+                        asset: 'assets/S2.png',
+                        width: logoWidth,
+                        darkness: 0.46,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
-
 // =============================================================================
 //  MAP PAGE
 // =============================================================================
@@ -232,7 +512,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   int _currentStatsPage = 0;
 
   // ===========================================================================
-  //  LIFECYCLE & INITIALIZATION functions
+  //  LIFECYCLE & INITIALIZATION 
   // ===========================================================================
 
   @override
@@ -1394,7 +1674,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       right: 0,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 580),
+          constraints: BoxConstraints(
+            maxWidth: math.min(580, MediaQuery.of(context).size.width * 0.65),
+          ),
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: isOfflineMode
               ? (routeInfo.isNotEmpty
@@ -1557,7 +1839,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           // Search Results
           if (_searchResults.isNotEmpty)
             Container(
-              constraints: const BoxConstraints(maxHeight: 300),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(color: Colors.white.withOpacity(0.04)),
@@ -1638,7 +1922,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _buildRightControls(bool isOfflineMode) {
     return Positioned(
       right: 20,
-      top: MediaQuery.of(context).padding.top + 100,
+      top: MediaQuery.of(context).padding.top +
+          MediaQuery.of(context).size.height * 0.12,
       child: SlideTransition(
         position: _sidebarSlideAnimation,
         child: Container(
@@ -1717,7 +2002,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             );
           },
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 820),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             decoration: BoxDecoration(
@@ -1732,53 +2019,80 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildHudStat(
-                  icon: Icons.speed_rounded,
-                  value: '$speed',
-                  unit: 'km/h',
-                  color: isNavigating ? _kSuccess : Colors.white.withOpacity(0.35),
-                ),
-                _buildHudDivider(),
-                _buildHudStat(
-                  icon: _getBatteryIcon(),
-                  value: '$batteryLevel',
-                  unit: '%',
-                  color: _getBatteryColor(),
-                ),
-                _buildHudDivider(),
-                _buildHudStat(
-                  icon: Icons.thermostat_rounded,
-                  value: '$motorTemp',
-                  unit: '°C',
-                  color: _getTemperatureColor(),
-                ),
-                _buildHudDivider(),
-                _buildHudStat(
-                  icon: Icons.signal_cellular_alt_rounded,
-                  value: '$signalStrength',
-                  unit: '/5',
-                  color: _getSignalColor(),
-                ),
-                _buildHudDivider(),
-                _buildHudStat(
-                  icon: Icons.gps_fixed_rounded,
-                  value: _getGpsShortStatus(),
-                  unit: 'GPS',
-                  color: _getGpsColor(),
-                ),
-                _buildHudDivider(),
-                _buildHudStat(
-                  icon: isOfflineMode
-                      ? Icons.wifi_off_rounded
-                      : Icons.wifi_rounded,
-                  value: isOfflineMode ? 'OFF' : 'ON',
-                  unit: 'Net',
-                  color: isOfflineMode ? _kWarning : _kPrimary,
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final compact = constraints.maxWidth < 700;
+                return Row(
+                  mainAxisAlignment: compact
+                      ? MainAxisAlignment.spaceBetween
+                      : MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: Icons.speed_rounded,
+                        value: '$speed',
+                        unit: 'km/h',
+                        color: isNavigating
+                            ? _kSuccess
+                            : Colors.white.withOpacity(0.35),
+                        compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: _getBatteryIcon(),
+                        value: '$batteryLevel',
+                        unit: '%',
+                        color: _getBatteryColor(),
+                        compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: Icons.thermostat_rounded,
+                        value: '$motorTemp',
+                        unit: '°C',
+                        color: _getTemperatureColor(),
+                        compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: Icons.signal_cellular_alt_rounded,
+                        value: '$signalStrength',
+                        unit: '/5',
+                        color: _getSignalColor(),
+                        compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: Icons.gps_fixed_rounded,
+                        value: _getGpsShortStatus(),
+                        unit: 'GPS',
+                        color: _getGpsColor(),
+                        compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildHudStat(
+                        icon: isOfflineMode
+                            ? Icons.wifi_off_rounded
+                            : Icons.wifi_rounded,
+                        value: isOfflineMode ? 'OFF' : 'ON',
+                        unit: 'Net',
+                        color: isOfflineMode ? _kWarning : _kPrimary,
+                        compact: compact,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -1791,12 +2105,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     required String value,
     required String unit,
     required Color color,
+    bool compact = false,
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: color, size: 17),
-        const SizedBox(height: 5),
+        Icon(icon, color: color, size: compact ? 15 : 17),
+        SizedBox(height: compact ? 4 : 5),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -1806,17 +2121,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               value,
               style: TextStyle(
                 color: color,
-                fontSize: 17,
+                fontSize: compact ? 14 : 17,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(width: 2),
+            SizedBox(width: compact ? 1 : 2),
             Text(
               unit,
               style: TextStyle(
                 color: color.withOpacity(0.45),
-                fontSize: 10,
+                fontSize: compact ? 9 : 10,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -1838,19 +2153,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // ── Location Card ──
   Widget _buildLocationCard(bool isOfflineMode) {
     final accentColor = isOfflineMode ? _kWarning : _kPrimary;
+    final screenSize = MediaQuery.of(context).size;
 
     return AnimatedBuilder(
       animation: _locationCardController,
       builder: (context, child) {
         return Positioned(
           left: 24,
-          bottom: 110,
+          bottom: screenSize.height * 0.18 + 20,
           child: Transform.translate(
             offset: Offset(0, (1 - _locationCardController.value) * 200),
             child: Opacity(
               opacity: _locationCardController.value,
               child: Container(
-                width: 400,
+                width: math.min(400, screenSize.width * 0.42),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: _kSurface.withOpacity(0.95),
@@ -1870,164 +2186,169 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header
-                    Row(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: screenSize.height * 0.65),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: accentColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            isOfflineMode
-                                ? Icons.location_pin
-                                : Icons.place_rounded,
-                            color: accentColor,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                selectedLocationInfo?.name ??
-                                    'Konum Yükleniyor...',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  letterSpacing: 0.2,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              if (selectedLocationInfo
-                                      ?.category.isNotEmpty ==
-                                  true)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 3),
-                                  child: Text(
-                                    selectedLocationInfo!.category,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: accentColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        _buildGlassIconButton(
-                            Icons.close_rounded, _hideLocationCard,
-                            size: 34),
-                      ],
-                    ),
-                    if (selectedLocationInfo != null) ...[
-                      // Divider
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        child: Container(
-                          height: 1,
-                          color: Colors.white.withOpacity(0.05),
-                        ),
-                      ),
-                      // Address
-                      if (selectedLocationInfo!.address.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            selectedLocationInfo!.address,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.55),
-                              fontSize: 13,
-                              height: 1.4,
-                            ),
-                          ),
-                        ),
-                      // Coordinates
-                      Row(
-                        children: [
-                          Icon(Icons.tag_rounded,
-                              color: Colors.white.withOpacity(0.2),
-                              size: 14),
-                          const SizedBox(width: 6),
-                          Text(
-                            selectedLocationInfo!.coordinates,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.3),
-                              fontSize: 12,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      // Actions
-                      if (!isOfflineMode)
+                        // Header
                         Row(
                           children: [
-                            Expanded(
-                              child: _buildGradientButton(
-                                label: isGettingRoute
-                                    ? 'Hesaplanıyor...'
-                                    : 'Rota Hesapla',
-                                icon: isGettingRoute
-                                    ? null
-                                    : Icons.navigation_rounded,
-                                isLoading: isGettingRoute,
-                                onTap:
-                                    isGettingRoute ? null : _calculateRoute,
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: accentColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                isOfflineMode
+                                    ? Icons.location_pin
+                                    : Icons.place_rounded,
+                                color: accentColor,
+                                size: 20,
                               ),
                             ),
-                            const SizedBox(width: 10),
-                            _buildGlassIconButton(
-                                Icons.close_rounded, _clearSelection,
-                                size: 46),
-                          ],
-                        )
-                      else
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: _kWarning.withOpacity(0.06),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                                color: _kWarning.withOpacity(0.12)),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.wifi_off_rounded,
-                                  color: _kWarning.withOpacity(0.7),
-                                  size: 18),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  'Çevrimdışı — sadece koordinat bilgisi',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: _kWarning.withOpacity(0.6),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    selectedLocationInfo?.name ??
+                                        'Konum Yükleniyor...',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 0.2,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                  if (selectedLocationInfo
+                                          ?.category.isNotEmpty ==
+                                      true)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3),
+                                      child: Text(
+                                        selectedLocationInfo!.category,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: accentColor,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            _buildGlassIconButton(
+                                Icons.close_rounded, _hideLocationCard,
+                                size: 34),
+                          ],
+                        ),
+                        if (selectedLocationInfo != null) ...[
+                          // Divider
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            child: Container(
+                              height: 1,
+                              color: Colors.white.withOpacity(0.05),
+                            ),
+                          ),
+                          // Address
+                          if (selectedLocationInfo!.address.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                selectedLocationInfo!.address,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.55),
+                                  fontSize: 13,
+                                  height: 1.4,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: _clearSelection,
-                                child: Icon(Icons.close_rounded,
-                                    color: _kWarning.withOpacity(0.4),
-                                    size: 16),
+                            ),
+                          // Coordinates
+                          Row(
+                            children: [
+                              Icon(Icons.tag_rounded,
+                                  color: Colors.white.withOpacity(0.2),
+                                  size: 14),
+                              const SizedBox(width: 6),
+                              Text(
+                                selectedLocationInfo!.coordinates,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.3),
+                                  fontSize: 12,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                    ],
-                  ],
+                          const SizedBox(height: 18),
+                          // Actions
+                          if (!isOfflineMode)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildGradientButton(
+                                    label: isGettingRoute
+                                        ? 'Hesaplanıyor...'
+                                        : 'Rota Hesapla',
+                                    icon: isGettingRoute
+                                        ? null
+                                        : Icons.navigation_rounded,
+                                    isLoading: isGettingRoute,
+                                    onTap:
+                                        isGettingRoute ? null : _calculateRoute,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                _buildGlassIconButton(
+                                    Icons.close_rounded, _clearSelection,
+                                    size: 46),
+                              ],
+                            )
+                          else
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: _kWarning.withOpacity(0.06),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                    color: _kWarning.withOpacity(0.12)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.wifi_off_rounded,
+                                      color: _kWarning.withOpacity(0.7),
+                                      size: 18),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      'Çevrimdışı — sadece koordinat bilgisi',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: _kWarning.withOpacity(0.6),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: _clearSelection,
+                                    child: Icon(Icons.close_rounded,
+                                        color: _kWarning.withOpacity(0.4),
+                                        size: 16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -2080,65 +2401,68 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: _kBg,
-      body: Stack(
-        children: [
-          // ── MAP ──
-          Positioned.fill(
-            child: FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: const LatLng(41.0082, 28.9784),
-                initialZoom: 13,
-                minZoom: 3,
-                maxZoom: 18,
-                onTap: (_, point) => _onMapTap(point),
-                onMapReady: _onMapReady,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: _getMapTileUrl(isOfflineMode),
+      body: SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            // ── MAP ──
+            Positioned.fill(
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: const LatLng(41.0082, 28.9784),
+                  initialZoom: 13,
+                  minZoom: 3,
                   maxZoom: 18,
-                  userAgentPackageName: 'com.modernmaps.app',
-                  errorTileCallback: (tile, error, stackTrace) {},
+                  onTap: (_, point) => _onMapTap(point),
+                  onMapReady: _onMapReady,
                 ),
-                // Route line
-                if (routePoints.length >= 2 && !isOfflineMode)
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: routePoints,
-                        strokeWidth: 4.5,
-                        color: _kPrimary,
-                        borderStrokeWidth: 3,
-                        borderColor: _kPrimary.withOpacity(0.25),
-                      ),
+                children: [
+                  TileLayer(
+                    urlTemplate: _getMapTileUrl(isOfflineMode),
+                    maxZoom: 18,
+                    userAgentPackageName: 'com.modernmaps.app',
+                    errorTileCallback: (tile, error, stackTrace) {},
+                  ),
+                  // Route line
+                  if (routePoints.length >= 2 && !isOfflineMode)
+                    PolylineLayer(
+                      polylines: [
+                        Polyline(
+                          points: routePoints,
+                          strokeWidth: 4.5,
+                          color: _kPrimary,
+                          borderStrokeWidth: 3,
+                          borderColor: _kPrimary.withOpacity(0.25),
+                        ),
+                      ],
+                    ),
+                  // Markers
+                  MarkerLayer(
+                    markers: [
+                      if (currentPosition != null)
+                        _buildCurrentLocationMarker(isOfflineMode),
+                      if (selectedLocation != null)
+                        _buildSelectedLocationMarker(isOfflineMode),
                     ],
                   ),
-                // Markers
-                MarkerLayer(
-                  markers: [
-                    if (currentPosition != null)
-                      _buildCurrentLocationMarker(isOfflineMode),
-                    if (selectedLocation != null)
-                      _buildSelectedLocationMarker(isOfflineMode),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          // ── TOP BAR ──
-          _buildTopBar(isOfflineMode),
+            // ── TOP BAR ──
+            _buildTopBar(isOfflineMode),
 
-          // ── RIGHT CONTROLS ──
-          _buildRightControls(isOfflineMode),
+            // ── RIGHT CONTROLS ──
+            _buildRightControls(isOfflineMode),
 
-          // ── BOTTOM HUD ──
-          _buildBottomHUD(isOfflineMode),
+            // ── BOTTOM HUD ──
+            _buildBottomHUD(isOfflineMode),
 
-          // ── LOCATION CARD ──
-          if (showLocationCard) _buildLocationCard(isOfflineMode),
-        ],
+            // ── LOCATION CARD ──
+            if (showLocationCard) _buildLocationCard(isOfflineMode),
+          ],
+        ),
       ),
     );
   }
