@@ -1985,6 +1985,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   // ── Bottom HUD ──
   Widget _buildBottomHUD(bool isOfflineMode) {
+    final arcSize =
+        math.min(180.0, MediaQuery.of(context).size.shortestSide * 0.28);
+
     return Positioned(
       bottom: 20,
       left: 0,
@@ -2005,7 +2008,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.85,
             ),
-            margin: const EdgeInsets.symmetric(horizontal: 20),
+            margin: EdgeInsets.only(left: 20, right: arcSize + 20),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             decoration: BoxDecoration(
               color: _kSurface.withOpacity(0.92),
@@ -2027,18 +2030,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       ? MainAxisAlignment.spaceBetween
                       : MainAxisAlignment.spaceEvenly,
                   children: [
-                    Flexible(
-                      child: _buildHudStat(
-                        icon: Icons.speed_rounded,
-                        value: '$speed',
-                        unit: 'km/h',
-                        color: isNavigating
-                            ? _kSuccess
-                            : Colors.white.withOpacity(0.35),
-                        compact: compact,
-                      ),
-                    ),
-                    if (!compact) _buildHudDivider(),
                     Flexible(
                       child: _buildHudStat(
                         icon: _getBatteryIcon(),
@@ -2098,6 +2089,78 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Widget _buildArcSpeedometer() {
+    final screenSize = MediaQuery.of(context).size;
+    final arcSize = math.min(180.0, screenSize.shortestSide * 0.28);
+
+    return Positioned(
+      right: 0,
+      bottom: 0,
+      child: GestureDetector(
+        onVerticalDragUpdate: (details) {
+          setState(() {
+            speed = (speed - details.delta.dy.toInt()).clamp(0, 120);
+          });
+        },
+        child: SizedBox(
+          width: arcSize,
+          height: arcSize,
+          child: CustomPaint(
+            painter: ArcSpeedometerPainter(
+              speed: speed.toDouble(),
+              maxSpeed: 100,
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: arcSize * 0.18,
+                  bottom: arcSize * 0.18,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0, end: speed.toDouble()),
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                        builder: (context, value, _) => Text(
+                          value.toInt().toString(),
+                          style: TextStyle(
+                            color: _getArcSpeedColor(value),
+                            fontSize: arcSize * 0.22,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -2,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'km/h',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.45),
+                          fontSize: arcSize * 0.07,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getArcSpeedColor(double speedValue) {
+    if (speedValue < 30) return _kSuccess;
+    if (speedValue < 60) return _kWarning;
+    if (speedValue < 85) return const Color(0xFFFF6B35);
+    return _kDanger;
   }
 
   Widget _buildHudStat({
@@ -2459,6 +2522,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // ── BOTTOM HUD ──
             _buildBottomHUD(isOfflineMode),
 
+            // ── ARC SPEEDOMETER ──
+            _buildArcSpeedometer(),
+
             // ── LOCATION CARD ──
             if (showLocationCard) _buildLocationCard(isOfflineMode),
           ],
@@ -2512,4 +2578,108 @@ class SearchResult {
     required this.type,
     this.importance = 0.0,
   });
+}
+
+class ArcSpeedometerPainter extends CustomPainter {
+  final double speed;
+  final double maxSpeed;
+
+  ArcSpeedometerPainter({required this.speed, required this.maxSpeed});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width, size.height);
+    final radius = size.width * 0.85;
+
+    const startAngle = math.pi;
+    const sweepAngle = math.pi / 2;
+
+    final trackPaint = Paint()
+      ..color = Colors.white.withOpacity(0.06)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.08
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      trackPaint,
+    );
+
+    final progress = (speed / maxSpeed).clamp(0.0, 1.0);
+    final activeSweep = sweepAngle * progress;
+
+    final gradient = SweepGradient(
+      startAngle: startAngle,
+      endAngle: startAngle + sweepAngle,
+      colors: const [
+        Color(0xFF00E676),
+        Color(0xFFFFEB3B),
+        Color(0xFFFF9100),
+        Color(0xFFFF5252),
+      ],
+      stops: const [0.0, 0.4, 0.7, 1.0],
+    );
+
+    final activePaint = Paint()
+      ..shader = gradient.createShader(
+        Rect.fromCircle(center: center, radius: radius),
+      )
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.09
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      activeSweep,
+      false,
+      activePaint,
+    );
+
+    final glowPaint = Paint()
+      ..shader = gradient.createShader(
+        Rect.fromCircle(center: center, radius: radius),
+      )
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.09
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      activeSweep,
+      false,
+      glowPaint,
+    );
+
+    final tickPaint = Paint()
+      ..color = Colors.white.withOpacity(0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    for (int i = 0; i <= 10; i++) {
+      final tickAngle = startAngle + (sweepAngle * i / 10);
+      final innerRadius = radius - size.width * 0.13;
+      final outerRadius = radius - size.width * 0.10;
+
+      final p1 = Offset(
+        center.dx + innerRadius * math.cos(tickAngle),
+        center.dy + innerRadius * math.sin(tickAngle),
+      );
+      final p2 = Offset(
+        center.dx + outerRadius * math.cos(tickAngle),
+        center.dy + outerRadius * math.sin(tickAngle),
+      );
+
+      canvas.drawLine(p1, p2, tickPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(ArcSpeedometerPainter old) =>
+      old.speed != speed || old.maxSpeed != maxSpeed;
 }
