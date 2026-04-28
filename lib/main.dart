@@ -615,6 +615,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Future<void> _initializeApp() async {
     try {
       debugPrint('Starting...');
+      
       await _checkConnectivity();
       _mapController = MapController();
 
@@ -1325,6 +1326,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     }
   }
 
+  // ===========================================================================
   // ===========================================================================
   //  MAP STYLE PICKER
   // ===========================================================================
