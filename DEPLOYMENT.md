@@ -70,11 +70,8 @@ cd /home/pi/iot-scooter/app
 # Get dependencies
 flutter pub get
 
-# Build for RPi (using flutter-pi)
-flutter build bundle --release
-
-# Or build directly for RPi display:
-# flutter-pi build /path/to/build/bundle
+# Build the Linux executable for Raspberry Pi
+flutter build linux --release
 ```
 
 ### 4. Create systemd Services
@@ -109,7 +106,7 @@ sudo systemctl start iot-map-backend.service
 sudo systemctl status iot-map-backend.service
 ```
 
-#### Flutter App Service (if using flutter-pi)
+#### Flutter App Service (Linux executable)
 
 Create `/etc/systemd/system/iot-app.service`:
 
@@ -124,7 +121,7 @@ Type=simple
 User=pi
 Environment="DISPLAY=:0"
 Environment="XDG_RUNTIME_DIR=/run/user/1000"
-ExecStart=/usr/local/bin/flutter-pi /home/pi/iot-scooter/app/build/bundle
+ExecStart=/home/pi/iot-scooter/app/build/linux/arm64/release/bundle/map_application
 Restart=on-failure
 RestartSec=5
 
@@ -271,7 +268,7 @@ sudo journalctl -u iot-app.service -f
 │   │   └── main.dart
 │   ├── pubspec.yaml
 │   └── build/
-│       └── bundle/  (after flutter build bundle)
+│       └── linux/arm64/release/bundle/map_application  (after flutter build linux --release)
 ├── python_service/
 │   ├── map_backend_service.py
 │   ├── download_tiles.py

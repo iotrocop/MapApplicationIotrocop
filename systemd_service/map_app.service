@@ -12,14 +12,15 @@ WorkingDirectory=/home/iot/map_app_src
 # Environment configuration
 Environment="PATH=/home/iot/.local/bin:/usr/local/bin:/usr/bin:/bin"
 Environment="DISPLAY=:0"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
 Environment="FLUTTER_CACHE_DIR=/home/iot/.cache/flutter"
 Environment="FLUTTER_DISABLE_CRASH_REPORTING=true"
 
 # Give backend time to start
 ExecStartPre=/bin/sleep 2
 
-# Start Flutter app
-ExecStart=/home/iot/Android/flutter/bin/flutter run --release -d linux
+# Start the Linux Flutter executable directly
+ExecStart=/home/iot/map_app_src/build/linux/arm64/release/bundle/map_application
 
 # Restart policy
 Restart=on-failure
