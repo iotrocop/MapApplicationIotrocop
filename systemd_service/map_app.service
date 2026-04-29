@@ -1,0 +1,35 @@
+[Unit]
+Description=IOT Scooter Map Application
+After=network.target map_backend.service
+Wants=map_backend.service
+
+[Service]
+Type=simple
+User=iot
+Group=iot
+WorkingDirectory=/home/iot/map_app_src
+
+# Environment configuration
+Environment="PATH=/home/iot/.local/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="DISPLAY=:0"
+Environment="FLUTTER_CACHE_DIR=/home/iot/.cache/flutter"
+Environment="FLUTTER_DISABLE_CRASH_REPORTING=true"
+
+# Give backend time to start
+ExecStartPre=/bin/sleep 2
+
+# Start Flutter app
+ExecStart=/home/iot/Android/flutter/bin/flutter run --release -d linux
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=120
+StartLimitBurst=3
+
+# Timeout settings
+TimeoutStartSec=60
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

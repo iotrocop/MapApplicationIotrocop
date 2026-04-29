@@ -476,10 +476,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // Vehicle Data
   int batteryLevel = 85;
   int speed = 0;
-  int motorTemp = 45;
-  int signalStrength = 4;
   String gpsAccuracy = 'Good';
   String trafficInfo = 'Light';
+  int accelFrontBack = 0;  // -10 to +10: negative=back tilt, positive=front tilt
+  int errorLevel = 0;  // 0-6: error indicator
+  int isReversing = 0;  // 0 = not reversing, 1 = reversing (ريوس)
+  int isRotating = 0;  // 0 = not rotating, 1 = rotating (دوران)
 
   // Navigation Data
   double routeDistance = 0;
@@ -586,29 +588,62 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   void _startEnhancedDataUpdate() {
-    _dataUpdateTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _dataUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
+      
+      _fetchTelemetryFromPython();
+    });
+    
+    // Fetch immediately on startup
+    _fetchTelemetryFromPython();
+  }
 
-      final random = math.Random();
-      setState(() {
-        if (isNavigating) {
-          speed = 25 + random.nextInt(35);
-          batteryLevel = math.max(10, batteryLevel - random.nextInt(2));
-          motorTemp = 45 + random.nextInt(15);
-        } else {
-          speed = random.nextInt(3);
-          motorTemp = 40 + random.nextInt(10);
-        }
-        signalStrength = math.max(2, 5 - random.nextInt(2));
-        gpsAccuracy = signalStrength >= 4
-            ? 'Mükemmel'
-            : signalStrength >= 3
-                ? 'İyi'
-                : 'Orta';
-      });
+  Future<void> _fetchTelemetryFromPython() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8080/telemetry'),
+      ).timeout(const Duration(milliseconds: 800));
+
+      if (response.statusCode == 200 && mounted) {
+        final data = json.decode(response.body);
+        
+        setState(() {
+          batteryLevel = (data['battery_level'] as num?)?.toInt() ?? 85;
+          speed = (data['speed'] as num?)?.toInt() ?? 0;
+          gpsAccuracy = data['gps_accuracy'] ?? 'Excellent';
+          accelFrontBack = (data['accel_front_back'] as num?)?.toInt() ?? 0;
+          errorLevel = (data['error_level'] as num?)?.toInt() ?? 0;
+          isReversing = (data['is_reversing'] as num?)?.toInt() ?? 0;
+          isRotating = (data['is_rotating'] as num?)?.toInt() ?? 0;
+        });
+      } else {
+        _useLocalTelemetryFallback();
+      }
+    } catch (e) {
+      debugPrint('Telemetry fetch error: $e');
+      _useLocalTelemetryFallback();
+    }
+  }
+
+  void _useLocalTelemetryFallback() {
+    if (!mounted) return;
+    
+    final random = math.Random();
+    setState(() {
+      if (isNavigating) {
+        speed = 25 + random.nextInt(35);
+        batteryLevel = math.max(10, batteryLevel - random.nextInt(2));
+      } else {
+        speed = random.nextInt(3);
+      }
+      gpsAccuracy = random.nextInt(3) == 0 ? 'Excellent' : 'Good';
+      accelFrontBack = random.nextInt(21) - 10;  // -10 to +10
+      errorLevel = random.nextInt(7);  // 0 to 6
+      isReversing = random.nextInt(2);  // 0 or 1
+      isRotating = random.nextInt(2);  // 0 or 1
     });
   }
 
@@ -789,8 +824,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   void _setDefaultLocation() {
-    const defaultLat = 41.0082;
-    const defaultLng = 28.9784;
+    const defaultLat = 41.0364;  // Taksim, Istanbul
+    const defaultLng = 28.9849;
 
     final defaultPosition = Position(
       latitude: defaultLat,
@@ -1287,22 +1322,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return _kDanger;
   }
 
-  Color _getSignalColor() {
-    if (signalStrength >= 4) return _kSuccess;
-    if (signalStrength >= 3) return _kWarning;
-    return _kDanger;
-  }
-
   Color _getGpsColor() {
-    if (gpsAccuracy == 'Mükemmel') return _kSuccess;
-    if (gpsAccuracy == 'İyi') return _kWarning;
-    return _kDanger;
-  }
-
-  Color _getTemperatureColor() {
-    if (motorTemp > 55) return _kDanger;
-    if (motorTemp > 45) return _kWarning;
-    return _kSuccess;
+    if (gpsAccuracy == 'Excellent') return _kSuccess;
+    return _kWarning;
   }
 
   IconData _getBatteryIcon() {
@@ -1314,16 +1336,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   String _getMapTileUrl(bool isOfflineMode) {
-    switch (currentMapStyle) {
-      case 'dark':
-        return 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
-      case 'satellite':
-        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      case 'terrain':
-        return 'https://tile.opentopomap.org/{z}/{x}/{y}.png';
-      default:
-        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-    }
+    // Always use localhost tile server for offline-first support
+    final style = currentMapStyle;
+    return 'http://127.0.0.1:8080/tiles/$style/{z}/{x}/{y}.png';
   }
 
   // ===========================================================================
@@ -2044,26 +2059,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     if (!compact) _buildHudDivider(),
                     Flexible(
                       child: _buildHudStat(
-                        icon: Icons.thermostat_rounded,
-                        value: '$motorTemp',
-                        unit: '°C',
-                        color: _getTemperatureColor(),
-                        compact: compact,
-                      ),
-                    ),
-                    if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildHudStat(
-                        icon: Icons.signal_cellular_alt_rounded,
-                        value: '$signalStrength',
-                        unit: '/5',
-                        color: _getSignalColor(),
-                        compact: compact,
-                      ),
-                    ),
-                    if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildHudStat(
                         icon: Icons.gps_fixed_rounded,
                         value: _getGpsShortStatus(),
                         unit: 'GPS',
@@ -2081,6 +2076,22 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                         unit: 'Net',
                         color: isOfflineMode ? _kWarning : _kPrimary,
                         compact: compact,
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildToggleIcon(
+                        icon: Icons.arrow_back_rounded,
+                        state: isReversing,
+                        label: 'REYOS',
+                      ),
+                    ),
+                    if (!compact) _buildHudDivider(),
+                    Flexible(
+                      child: _buildToggleIcon(
+                        icon: Icons.rotate_right_rounded,
+                        state: isRotating,
+                        label: 'ROTATE',
                       ),
                     ),
                   ],
@@ -2165,6 +2176,125 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     return _kDanger;
   }
 
+  Widget _buildBalanceIndicator() {
+    final screenSize = MediaQuery.of(context).size;
+    final indicatorWidth = screenSize.width * 0.35;
+    final indicatorHeight = 24.0;
+
+    return Positioned(
+      right: screenSize.width * 0.05,
+      bottom: screenSize.height * 0.12,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'BALANCE',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.4),
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.5,
+            ),
+          ),
+          SizedBox(height: 6),
+          Container(
+            width: indicatorWidth,
+            height: indicatorHeight,
+            decoration: BoxDecoration(
+              border: Border.all(color: _kPrimary.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Stack(
+              children: [
+                // Center line (neutral position)
+                Positioned(
+                  left: indicatorWidth / 2 - 1,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 2,
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                ),
+                // Label: Back
+                Positioned(
+                  left: 4,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Text(
+                      'B',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.3),
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                // Label: Front
+                Positioned(
+                  right: 4,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Text(
+                      'F',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.3),
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                // Moving indicator (smooth animation)
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: (accelFrontBack + 10) / 20.0), // Normalize -10..+10 to 0..1
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, normalizedValue, _) {
+                    final offset = (indicatorWidth - 8) * normalizedValue;
+                    final isFront = accelFrontBack > 0;
+                    final isBack = accelFrontBack < 0;
+
+                    return Positioned(
+                      left: offset,
+                      top: (indicatorHeight - 8) / 2,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isFront
+                              ? _kSuccess.withOpacity(0.8)
+                              : isBack
+                                  ? _kWarning.withOpacity(0.8)
+                                  : _kPrimary.withOpacity(0.8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isFront
+                                  ? _kSuccess
+                                  : isBack
+                                      ? _kWarning
+                                      : _kPrimary,
+                              blurRadius: 6,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHudStat({
     required IconData icon,
     required String value,
@@ -2212,6 +2342,86 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       height: 30,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       color: Colors.white.withOpacity(0.05),
+    );
+  }
+
+  Widget _buildToggleIcon({
+    required IconData icon,
+    required int state,
+    required String label,
+  }) {
+    final isActive = state == 1;
+    final color = isActive ? _kSuccess : Colors.white.withOpacity(0.3);
+    
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 16),
+        SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 8,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorCircles() {
+    return Positioned(
+      top: 20,
+      left: 20,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'ERROR STATUS',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Colors.white.withOpacity(0.5),
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(6, (index) {
+              final isError = index < errorLevel;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isError ? _kDanger : _kSuccess,
+                    boxShadow: [
+                      BoxShadow(
+                        color: (isError ? _kDanger : _kSuccess).withOpacity(0.5),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 
@@ -2475,7 +2685,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
-                  initialCenter: const LatLng(41.0082, 28.9784),
+                  initialCenter: const LatLng(41.0364, 28.9849),  // Taksim, Istanbul
                   initialZoom: 13,
                   minZoom: 3,
                   maxZoom: 18,
@@ -2524,8 +2734,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             // ── BOTTOM HUD ──
             _buildBottomHUD(isOfflineMode),
 
+            // ── ERROR CIRCLES ──
+            _buildErrorCircles(),
+
             // ── ARC SPEEDOMETER ──
             _buildArcSpeedometer(),
+
+            // ── BALANCE INDICATOR ──
+            _buildBalanceIndicator(),
 
             // ── LOCATION CARD ──
             if (showLocationCard) _buildLocationCard(isOfflineMode),

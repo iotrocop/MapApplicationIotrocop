@@ -1,0 +1,25 @@
+[Unit]
+Description=IOT Scooter Map Backend Service
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=iot
+Group=iot
+WorkingDirectory=/home/iot/map_app_src/python_service
+
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+
+ExecStart=/usr/bin/python3 map_backend_service.py
+
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=120
+StartLimitBurst=5
+
+TimeoutStartSec=20
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
