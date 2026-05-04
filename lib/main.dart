@@ -89,127 +89,46 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _s1OpacityAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        weight: 45,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.0),
-        weight: 55,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.62, curve: Curves.easeInOut),
-      ),
-    );
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 45),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 55),
+    ]).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.62, curve: Curves.easeInOut)));
 
     _s1ScaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.84, end: 1.04)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
-        weight: 65,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.04, end: 1.2)
-            .chain(CurveTween(curve: Curves.easeIn)),
-        weight: 35,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.62),
-      ),
-    );
+      TweenSequenceItem(tween: Tween<double>(begin: 0.84, end: 1.04).chain(CurveTween(curve: Curves.easeOutCubic)), weight: 65),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.04, end: 1.2).chain(CurveTween(curve: Curves.easeIn)), weight: 35),
+    ]).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.62)));
 
     _s1RotationAnimation = Tween<double>(begin: -0.02, end: 0.04).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.12, 0.62, curve: Curves.easeInOut),
-      ),
-    );
+      CurvedAnimation(parent: _controller, curve: const Interval(0.12, 0.62, curve: Curves.easeInOut)));
 
     _s2OpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.42, 0.82, curve: Curves.easeOut),
-      ),
-    );
+      CurvedAnimation(parent: _controller, curve: const Interval(0.42, 0.82, curve: Curves.easeOut)));
 
     _s2ScaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.34, end: 0.94)
-            .chain(CurveTween(curve: Curves.easeOutExpo)),
-        weight: 70,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.94, end: 1.03)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 15,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.03, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 15,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.44, 1.0),
-      ),
-    );
+      TweenSequenceItem(tween: Tween<double>(begin: 1.34, end: 0.94).chain(CurveTween(curve: Curves.easeOutExpo)), weight: 70),
+      TweenSequenceItem(tween: Tween<double>(begin: 0.94, end: 1.03).chain(CurveTween(curve: Curves.easeInOut)), weight: 15),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.03, end: 1.0).chain(CurveTween(curve: Curves.easeOut)), weight: 15),
+    ]).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.44, 1.0)));
 
     _s2TranslationAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 36.0, end: -8.0)
-            .chain(CurveTween(curve: Curves.easeOutCubic)),
-        weight: 78,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: -8.0, end: 0.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 22,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.44, 1.0),
-      ),
-    );
+      TweenSequenceItem(tween: Tween<double>(begin: 36.0, end: -8.0).chain(CurveTween(curve: Curves.easeOutCubic)), weight: 78),
+      TweenSequenceItem(tween: Tween<double>(begin: -8.0, end: 0.0).chain(CurveTween(curve: Curves.easeOut)), weight: 22),
+    ]).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.44, 1.0)));
 
     _s2StreakOffsetAnimation = Tween<double>(begin: -1.35, end: 1.35).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.47, 0.69, curve: Curves.easeOutCubic),
-      ),
-    );
+      CurvedAnimation(parent: _controller, curve: const Interval(0.47, 0.69, curve: Curves.easeOutCubic)));
 
     _s2StreakOpacityAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 0.95)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 30,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.95, end: 0.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
-        weight: 70,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.47, 0.75),
-      ),
-    );
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 0.95).chain(CurveTween(curve: Curves.easeOut)), weight: 30),
+      TweenSequenceItem(tween: Tween<double>(begin: 0.95, end: 0.0).chain(CurveTween(curve: Curves.easeIn)), weight: 70),
+    ]).animate(CurvedAnimation(parent: _controller, curve: const Interval(0.47, 0.75)));
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const MapPage(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
+            pageBuilder: (context, animation, secondaryAnimation) => const MapPage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             },
             transitionDuration: const Duration(milliseconds: 550),
@@ -229,24 +148,11 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  Widget _buildFeatheredSplashImage({
-    required String asset,
-    required double width,
-    required double darkness,
-  }) {
+  Widget _buildFeatheredSplashImage({required String asset, required double width, required double darkness}) {
     final image = ColorFiltered(
-      colorFilter: ColorFilter.mode(
-        Colors.black.withOpacity(darkness),
-        BlendMode.darken,
-      ),
-      child: Image.asset(
-        asset,
-        width: width,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.high,
-      ),
+      colorFilter: ColorFilter.mode(Colors.black.withOpacity(darkness), BlendMode.darken),
+      child: Image.asset(asset, width: width, fit: BoxFit.contain, filterQuality: FilterQuality.high),
     );
-
     return SizedBox(
       width: width,
       child: Stack(
@@ -258,12 +164,7 @@ class _SplashScreenState extends State<SplashScreen>
               return const RadialGradient(
                 center: Alignment(0, -0.03),
                 radius: 0.78,
-                colors: [
-                  Colors.white,
-                  Colors.white,
-                  Color(0xBBFFFFFF),
-                  Colors.transparent,
-                ],
+                colors: [Colors.white, Colors.white, Color(0xBBFFFFFF), Colors.transparent],
                 stops: [0.0, 0.44, 0.7, 1.0],
               ).createShader(rect);
             },
@@ -276,11 +177,7 @@ class _SplashScreenState extends State<SplashScreen>
                 gradient: RadialGradient(
                   center: const Alignment(0, -0.03),
                   radius: 0.82,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.22),
-                    Colors.black.withOpacity(0.56),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.22), Colors.black.withOpacity(0.56)],
                   stops: const [0.54, 0.8, 1.0],
                 ),
               ),
@@ -309,11 +206,7 @@ class _SplashScreenState extends State<SplashScreen>
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF020202),
-                      Color(0xFF0B0B0B),
-                      Color(0xFF171717),
-                    ],
+                    colors: [Color(0xFF020202), Color(0xFF0B0B0B), Color(0xFF171717)],
                   ),
                 ),
               ),
@@ -344,11 +237,7 @@ class _SplashScreenState extends State<SplashScreen>
                     angle: _s1RotationAnimation.value,
                     child: Transform.scale(
                       scale: _s1ScaleAnimation.value,
-                      child: _buildFeatheredSplashImage(
-                        asset: 'assets/S1.png',
-                        width: logoWidth,
-                        darkness: 0.24,
-                      ),
+                      child: _buildFeatheredSplashImage(asset: 'assets/S1.png', width: logoWidth, darkness: 0.24),
                     ),
                   ),
                 ),
@@ -383,15 +272,8 @@ class _SplashScreenState extends State<SplashScreen>
                               stops: const [0.0, 0.32, 0.5, 0.68, 1.0],
                             ),
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.18),
-                                blurRadius: 22,
-                                spreadRadius: 1,
-                              ),
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.65),
-                                blurRadius: 26,
-                              ),
+                              BoxShadow(color: Colors.white.withOpacity(0.18), blurRadius: 22, spreadRadius: 1),
+                              BoxShadow(color: Colors.black.withOpacity(0.65), blurRadius: 26),
                             ],
                           ),
                         ),
@@ -407,11 +289,7 @@ class _SplashScreenState extends State<SplashScreen>
                     offset: Offset(0, _s2TranslationAnimation.value),
                     child: Transform.scale(
                       scale: _s2ScaleAnimation.value,
-                      child: _buildFeatheredSplashImage(
-                        asset: 'assets/S2.png',
-                        width: logoWidth,
-                        darkness: 0.46,
-                      ),
+                      child: _buildFeatheredSplashImage(asset: 'assets/S2.png', width: logoWidth, darkness: 0.46),
                     ),
                   ),
                 ),
@@ -423,6 +301,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
+
 // =============================================================================
 //  MAP PAGE
 // =============================================================================
@@ -435,7 +314,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
-  // Design tokens
   static const _kPrimary = Color(0xFF00E5FF);
   static const _kAccent = Color(0xFF7C4DFF);
   static const _kSurface = Color(0xFF161B22);
@@ -446,7 +324,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   MapController? _mapController;
 
-  // Animation Controllers
   late AnimationController _loadingController;
   late AnimationController _locationCardController;
   late AnimationController _sidebarController;
@@ -458,12 +335,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   late Animation<double> _statsSlideAnimation;
   late Animation<double> _statsOpacityAnimation;
 
-  // Timers and Subscriptions
   Timer? _locationTimer;
   Timer? _dataUpdateTimer;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
-  // Core State fields
   bool isOnline = true;
   bool forceOffline = false;
   bool _isInitializing = true;
@@ -476,12 +351,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   // Vehicle Data
   int batteryLevel = 85;
   int speed = 0;
+  double _displaySpeed = 0;
+  double _displayAccel = 0;
   String gpsAccuracy = 'Good';
   String trafficInfo = 'Light';
-  int accelFrontBack = 0;  // -10 to +10: negative=back tilt, positive=front tilt
-  int errorLevel = 0;  // 0-6: error indicator
-  int isReversing = 0;  // 0 = not reversing, 1 = reversing (ريوس)
-  int isRotating = 0;  // 0 = not rotating, 1 = rotating (دوران)
+  int accelFrontBack = 0;
+  int errorLevel = 0;
+  int isReversing = 0;
+  int isRotating = 0;
 
   // Navigation Data
   double routeDistance = 0;
@@ -495,7 +372,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   List<LatLng> routePoints = [];
   String routeInfo = '';
 
-  // Map Layers
   String currentMapStyle = 'dark';
   final List<MapLayer> availableLayers = [
     MapLayer('dark', 'Koyu', Icons.dark_mode_rounded),
@@ -504,7 +380,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     MapLayer('terrain', 'Arazi', Icons.terrain_rounded),
   ];
 
-  // Search state fields
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
   List<SearchResult> _searchResults = [];
@@ -512,10 +387,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Timer? _searchDebouncer;
 
   int _currentStatsPage = 0;
-
-  // ===========================================================================
-  //  LIFECYCLE & INITIALIZATION 
-  // ===========================================================================
 
   @override
   void initState() {
@@ -526,78 +397,31 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   void _initializeAnimations() {
-    _loadingController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat();
+    _loadingController = AnimationController(duration: const Duration(seconds: 2), vsync: this)..repeat();
+    _locationCardController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
+    _sidebarController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _mapTransitionController = AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
+    _statsTransitionController = AnimationController(duration: const Duration(milliseconds: 600), vsync: this);
 
-    _locationCardController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
+    _pulseAnimation = CurvedAnimation(parent: _loadingController, curve: Curves.easeInOut);
 
-    _sidebarController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
+    _sidebarSlideAnimation = Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
+      CurvedAnimation(parent: _sidebarController, curve: Curves.easeOutCubic));
 
-    _mapTransitionController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
+    _mapFadeAnimation = CurvedAnimation(parent: _mapTransitionController, curve: Curves.easeInOut);
 
-    _statsTransitionController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
+    _statsSlideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _statsTransitionController, curve: Curves.easeOutBack));
 
-    _pulseAnimation = CurvedAnimation(
-      parent: _loadingController,
-      curve: Curves.easeInOut,
-    );
-
-    _sidebarSlideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _sidebarController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _mapFadeAnimation = CurvedAnimation(
-      parent: _mapTransitionController,
-      curve: Curves.easeInOut,
-    );
-
-    _statsSlideAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _statsTransitionController,
-      curve: Curves.easeOutBack,
-    ));
-
-    _statsOpacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _statsTransitionController,
-      curve: Curves.easeInOut,
-    ));
-
+    _statsOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _statsTransitionController, curve: Curves.easeInOut));
   }
 
   void _startEnhancedDataUpdate() {
-    _dataUpdateTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-      
+    _dataUpdateTimer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      if (!mounted) { timer.cancel(); return; }
       _fetchTelemetryFromPython();
     });
-    
-    // Fetch immediately on startup
     _fetchTelemetryFromPython();
   }
 
@@ -609,15 +433,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
       if (response.statusCode == 200 && mounted) {
         final data = json.decode(response.body);
-        
         setState(() {
+          _displaySpeed = speed.toDouble();
+          _displayAccel = accelFrontBack.toDouble();
           batteryLevel = (data['battery_level'] as num?)?.toInt() ?? 85;
           speed = (data['speed'] as num?)?.toInt() ?? 0;
           gpsAccuracy = data['gps_accuracy'] ?? 'Excellent';
           accelFrontBack = (data['accel_front_back'] as num?)?.toInt() ?? 0;
           errorLevel = (data['error_level'] as num?)?.toInt() ?? 0;
-          isReversing = (data['is_reversing'] as num?)?.toInt() ?? 0;
-          isRotating = (data['is_rotating'] as num?)?.toInt() ?? 0;
+          isReversing = (data['btn1'] as num?)?.toInt() ?? 0;
+          isRotating = (data['btn2'] as num?)?.toInt() ?? 0;
         });
       } else {
         _useLocalTelemetryFallback();
@@ -630,7 +455,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   void _useLocalTelemetryFallback() {
     if (!mounted) return;
-    
     final random = math.Random();
     setState(() {
       if (isNavigating) {
@@ -640,28 +464,23 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         speed = random.nextInt(3);
       }
       gpsAccuracy = random.nextInt(3) == 0 ? 'Excellent' : 'Good';
-      accelFrontBack = random.nextInt(21) - 10;  // -10 to +10
-      errorLevel = random.nextInt(7);  // 0 to 6
-      isReversing = random.nextInt(2);  // 0 or 1
-      isRotating = random.nextInt(2);  // 0 or 1
+      accelFrontBack = random.nextInt(21) - 10;
+      errorLevel = random.nextInt(7);
+      isReversing = random.nextInt(2);
+      isRotating = random.nextInt(2);
     });
   }
 
   Future<void> _initializeApp() async {
     try {
-      debugPrint('Starting...');
-      
       await _checkConnectivity();
       _mapController = MapController();
-
       if (mounted) {
         setState(() => _isInitializing = false);
         _startEntryAnimations();
         _requestLocationAsync();
       }
-      debugPrint('Init complete');
     } catch (e) {
-      debugPrint('Init error: $e');
       if (mounted) {
         setState(() => _isInitializing = false);
         _startEntryAnimations();
@@ -669,10 +488,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       }
     }
   }
-
-  // ===========================================================================
-  //  CONNECTIVITY
-  // ===========================================================================
 
   void _startEntryAnimations() {
     Future.delayed(const Duration(milliseconds: 300), () {
@@ -685,32 +500,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   Future<void> _checkConnectivity() async {
     try {
-      final results = await Connectivity()
-          .checkConnectivity()
-          .timeout(const Duration(seconds: 3));
-
-      if (mounted) {
-        setState(() {
-          isOnline = !results.contains(ConnectivityResult.none);
-        });
-      }
-
-      _connectivitySubscription =
-          Connectivity().onConnectivityChanged.listen((results) {
+      final results = await Connectivity().checkConnectivity().timeout(const Duration(seconds: 3));
+      if (mounted) setState(() { isOnline = !results.contains(ConnectivityResult.none); });
+      _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
         if (mounted) {
           final newOnlineStatus = !results.contains(ConnectivityResult.none);
-          if (newOnlineStatus != isOnline) {
-            setState(() {
-              isOnline = newOnlineStatus;
-            });
-          }
+          if (newOnlineStatus != isOnline) setState(() { isOnline = newOnlineStatus; });
         }
       });
     } catch (e) {
-      debugPrint('Connectivity check error: $e');
-      if (mounted) {
-        setState(() => isOnline = false);
-      }
+      if (mounted) setState(() => isOnline = false);
     }
   }
 
@@ -719,15 +518,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     setState(() => _isTransitioning = true);
     _mapTransitionController.reset();
     _mapTransitionController.forward().then((_) {
-      if (mounted) {
-        setState(() => _isTransitioning = false);
-      }
+      if (mounted) setState(() => _isTransitioning = false);
     });
   }
-
-  // ===========================================================================
-  //  LOCATION
-  // ===========================================================================
 
   void _requestLocationAsync() {
     _locationTimer = Timer(const Duration(milliseconds: 500), () async {
@@ -737,121 +530,63 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   Future<void> _handleLocationPermissions() async {
     try {
-      if (!await Geolocator.isLocationServiceEnabled()) {
-        _setDefaultLocation();
-        return;
-      }
-
+      if (!await Geolocator.isLocationServiceEnabled()) { _setDefaultLocation(); return; }
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission()
-            .timeout(const Duration(seconds: 10));
+        permission = await Geolocator.requestPermission().timeout(const Duration(seconds: 10));
       }
-
-      if (permission == LocationPermission.deniedForever ||
-          permission == LocationPermission.denied) {
-        _setDefaultLocation();
-        return;
+      if (permission == LocationPermission.deniedForever || permission == LocationPermission.denied) {
+        _setDefaultLocation(); return;
       }
-
       await _getCurrentLocation();
-    } catch (e) {
-      debugPrint('Permission error: $e');
-      _setDefaultLocation();
-    }
+    } catch (e) { _setDefaultLocation(); }
   }
 
   Future<void> _getCurrentLocation() async {
     if (!mounted) return;
-
     try {
-      try {
-        final lastPosition = await Geolocator.getLastKnownPosition()
-            .timeout(const Duration(seconds: 3));
-
-        if (lastPosition != null && mounted) {
-          setState(() => currentPosition = lastPosition);
-          _moveMapToLocation(lastPosition);
-          _getCurrentPositionInBackground();
-          return;
-        }
-      } catch (e) {
-        debugPrint('Last position error: $e');
+      final lastPosition = await Geolocator.getLastKnownPosition().timeout(const Duration(seconds: 3));
+      if (lastPosition != null && mounted) {
+        setState(() => currentPosition = lastPosition);
+        _moveMapToLocation(lastPosition);
+        _getCurrentPositionInBackground();
+        return;
       }
-
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
         timeLimit: const Duration(seconds: 10),
       ).timeout(const Duration(seconds: 15));
-
-      if (mounted) {
-        setState(() => currentPosition = position);
-        _moveMapToLocation(position);
-      }
-    } catch (e) {
-      debugPrint('Location error: $e');
-      _setDefaultLocation();
-    }
+      if (mounted) { setState(() => currentPosition = position); _moveMapToLocation(position); }
+    } catch (e) { _setDefaultLocation(); }
   }
 
   void _getCurrentPositionInBackground() {
     Timer(const Duration(seconds: 5), () async {
       if (!mounted) return;
       try {
-        final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.medium,
-          timeLimit: const Duration(seconds: 8),
-        );
-        if (mounted) {
-          setState(() => currentPosition = position);
-        }
-      } catch (e) {
-        debugPrint('Background location error: $e');
-      }
+        final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium, timeLimit: const Duration(seconds: 8));
+        if (mounted) setState(() => currentPosition = position);
+      } catch (e) {}
     });
   }
 
   void _moveMapToLocation(Position position) {
     if (!_mapReady || _mapController == null || !mounted) return;
-    try {
-      _mapController!.move(
-        LatLng(position.latitude, position.longitude),
-        15,
-      );
-    } catch (e) {
-      debugPrint('Map move error: $e');
-    }
+    try { _mapController!.move(LatLng(position.latitude, position.longitude), 15); } catch (e) {}
   }
 
   void _setDefaultLocation() {
-    const defaultLat = 41.0364;  // Taksim, Istanbul
+    const defaultLat = 41.0364;
     const defaultLng = 28.9849;
-
     final defaultPosition = Position(
-      latitude: defaultLat,
-      longitude: defaultLng,
-      timestamp: DateTime.now(),
-      accuracy: 100,
-      altitude: 0,
-      altitudeAccuracy: 0,
-      heading: 0,
-      speed: 0,
-      speedAccuracy: 0,
-      headingAccuracy: 0,
+      latitude: defaultLat, longitude: defaultLng, timestamp: DateTime.now(),
+      accuracy: 100, altitude: 0, altitudeAccuracy: 0, heading: 0, speed: 0, speedAccuracy: 0, headingAccuracy: 0,
     );
-
     if (mounted) {
       setState(() => currentPosition = defaultPosition);
-
       if (_mapReady && _mapController != null) {
         Timer(const Duration(milliseconds: 300), () {
-          if (mounted) {
-            try {
-              _mapController!.move(const LatLng(defaultLat, defaultLng), 13);
-            } catch (e) {
-              debugPrint('Default location error: $e');
-            }
-          }
+          if (mounted) { try { _mapController!.move(const LatLng(defaultLat, defaultLng), 13); } catch (e) {} }
         });
       }
     }
@@ -862,107 +597,57 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       setState(() => _mapReady = true);
       if (currentPosition != null) {
         Timer(const Duration(milliseconds: 500), () {
-          if (mounted && currentPosition != null) {
-            _moveMapToLocation(currentPosition!);
-          }
+          if (mounted && currentPosition != null) _moveMapToLocation(currentPosition!);
         });
       }
     }
   }
 
-  // ===========================================================================
-  //  MAP INTERACTIONS
-  // ===========================================================================
-
   Future<void> _onMapTap(LatLng point) async {
     if (!mounted) return;
-
-    setState(() {
-      selectedLocation = point;
-      showLocationCard = true;
-      selectedLocationInfo = null;
-    });
-
+    setState(() { selectedLocation = point; showLocationCard = true; selectedLocationInfo = null; });
     _locationCardController.forward();
-
     final isOfflineMode = forceOffline || !isOnline;
-    if (isOfflineMode) {
-      _getOfflineLocationInfo(point);
-    } else {
-      await _getOnlineLocationInfo(point);
-    }
+    if (isOfflineMode) { _getOfflineLocationInfo(point); } else { await _getOnlineLocationInfo(point); }
   }
 
   Future<void> _getOnlineLocationInfo(LatLng point) async {
     try {
-      final url = 'https://nominatim.openstreetmap.org/reverse?'
-          'format=json&lat=${point.latitude}&lon=${point.longitude}&zoom=18&addressdetails=1';
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'User-Agent': 'ModernMapsApp/1.0'},
-      ).timeout(const Duration(seconds: 8));
-
+      final url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${point.latitude}&lon=${point.longitude}&zoom=18&addressdetails=1';
+      final response = await http.get(Uri.parse(url), headers: {'User-Agent': 'ModernMapsApp/1.0'}).timeout(const Duration(seconds: 8));
       if (response.statusCode == 200 && mounted) {
         final data = json.decode(response.body);
-
         String name = 'Bilinmeyen Konum';
         String address = '';
         String category = '';
-
         if (data['display_name'] != null) {
-          final displayName = data['display_name'] as String;
-          final parts = displayName.split(', ');
-
-          if (parts.isNotEmpty) {
-            name = parts[0];
-            if (parts.length > 1) {
-              address = parts.skip(1).take(3).join(', ');
-            }
-          }
+          final parts = (data['display_name'] as String).split(', ');
+          if (parts.isNotEmpty) { name = parts[0]; if (parts.length > 1) address = parts.skip(1).take(3).join(', '); }
         }
-
-        if (data['category'] != null) {
-          category = _translateCategory(data['category']);
-        }
-
+        if (data['category'] != null) category = _translateCategory(data['category']);
         if (mounted) {
           setState(() {
             selectedLocationInfo = LocationInfo(
-              name: name,
-              address: address,
-              category: category,
-              coordinates:
-                  '${point.latitude.toStringAsFixed(4)}, ${point.longitude.toStringAsFixed(4)}',
+              name: name, address: address, category: category,
+              coordinates: '${point.latitude.toStringAsFixed(4)}, ${point.longitude.toStringAsFixed(4)}',
               isOnline: true,
             );
           });
         }
       }
-    } catch (e) {
-      debugPrint('Location info error: $e');
-      _getOfflineLocationInfo(point);
-    }
+    } catch (e) { _getOfflineLocationInfo(point); }
   }
 
   void _getOfflineLocationInfo(LatLng point) {
     if (!mounted) return;
-
-    final random =
-        math.Random(point.latitude.hashCode + point.longitude.hashCode);
+    final random = math.Random(point.latitude.hashCode + point.longitude.hashCode);
     const locations = ['Konum', 'Nokta', 'Alan', 'Bölge', 'Mevki'];
     const adjectives = ['Seçilen', 'İşaretli', 'Belirlenen', 'Hedef'];
-
-    final locationName =
-        '${adjectives[random.nextInt(adjectives.length)]} ${locations[random.nextInt(locations.length)]}';
-
     setState(() {
       selectedLocationInfo = LocationInfo(
-        name: locationName,
-        address: 'Çevrimdışı mod',
-        category: 'Koordinat',
-        coordinates:
-            '${point.latitude.toStringAsFixed(4)}, ${point.longitude.toStringAsFixed(4)}',
+        name: '${adjectives[random.nextInt(adjectives.length)]} ${locations[random.nextInt(locations.length)]}',
+        address: 'Çevrimdışı mod', category: 'Koordinat',
+        coordinates: '${point.latitude.toStringAsFixed(4)}, ${point.longitude.toStringAsFixed(4)}',
         isOnline: false,
       );
     });
@@ -970,45 +655,25 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   String _translateCategory(String category) {
     const categoryMap = {
-      'amenity': 'Tesis',
-      'shop': 'Mağaza',
-      'building': 'Bina',
-      'highway': 'Yol',
-      'natural': 'Doğal Alan',
-      'leisure': 'Eğlence',
-      'tourism': 'Turizm',
-      'place': 'Yer',
-      'landuse': 'Arazi',
+      'amenity': 'Tesis', 'shop': 'Mağaza', 'building': 'Bina', 'highway': 'Yol',
+      'natural': 'Doğal Alan', 'leisure': 'Eğlence', 'tourism': 'Turizm',
+      'place': 'Yer', 'landuse': 'Arazi',
     };
     return categoryMap[category] ?? 'Konum';
   }
 
   void _clearSelection() {
     if (!mounted) return;
-    setState(() {
-      selectedLocation = null;
-      selectedLocationInfo = null;
-      showLocationCard = false;
-    });
+    setState(() { selectedLocation = null; selectedLocationInfo = null; showLocationCard = false; });
     _locationCardController.reverse();
   }
 
   void _hideLocationCard() {
     _locationCardController.reverse();
     Timer(const Duration(milliseconds: 400), () {
-      if (mounted) {
-        setState(() {
-          showLocationCard = false;
-          selectedLocation = null;
-          selectedLocationInfo = null;
-        });
-      }
+      if (mounted) setState(() { showLocationCard = false; selectedLocation = null; selectedLocationInfo = null; });
     });
   }
-
-  // ===========================================================================
-  //  ROUTING
-  // ===========================================================================
 
   String _formatDuration(int minutes) {
     if (minutes < 60) return '$minutes dk';
@@ -1026,65 +691,37 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   Future<void> _calculateRoute() async {
     if (currentPosition == null || selectedLocation == null) return;
-
     final isOfflineMode = forceOffline || !isOnline;
     if (isOfflineMode) return;
-
     setState(() => isGettingRoute = true);
-
     try {
-      final start =
-          LatLng(currentPosition!.latitude, currentPosition!.longitude);
+      final start = LatLng(currentPosition!.latitude, currentPosition!.longitude);
       final end = selectedLocation!;
-
       final route = await _getOnlineRoute(start, end);
       final info = await _getRouteInfo(start, end, true);
-
       if (mounted) {
-        setState(() {
-          routePoints = route;
-          routeInfo = info;
-          isNavigating = true;
-          showLocationCard = false;
-          speed = 30;
-        });
-
+        setState(() { routePoints = route; routeInfo = info; isNavigating = true; showLocationCard = false; speed = 30; });
         _hideLocationCard();
         _fitMapToRoute();
       }
-    } catch (e) {
-      debugPrint('Route error: $e');
-    } finally {
-      if (mounted) {
-        setState(() => isGettingRoute = false);
-      }
-    }
+    } catch (e) {} finally { if (mounted) setState(() => isGettingRoute = false); }
   }
 
   Future<List<LatLng>> _getOnlineRoute(LatLng start, LatLng end) async {
-    final url = 'https://router.project-osrm.org/route/v1/driving/'
-        '${start.longitude},${start.latitude};'
-        '${end.longitude},${end.latitude}'
-        '?overview=full&geometries=geojson';
-
-    final response =
-        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
-
+    final url = 'https://router.project-osrm.org/route/v1/driving/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?overview=full&geometries=geojson';
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['routes']?.isNotEmpty == true) {
         final route = data['routes'][0];
-
         if (route['distance'] != null && route['duration'] != null) {
           routeDistance = (route['distance'] / 1000);
           routeDuration = (route['duration'] / 60).round();
           arrivalTime = _calculateArrivalTime(routeDuration);
         }
-
         return _decodeGeoJsonRoute(route['geometry']);
       }
     }
-
     throw Exception('Route not found');
   }
 
@@ -1092,18 +729,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     if (online && routeDuration > 0 && routeDistance > 0) {
       return '${routeDistance.toStringAsFixed(1)} km  •  ${_formatDuration(routeDuration)}  •  ${arrivalTime}\'de varış';
     }
-
-    final distance = Geolocator.distanceBetween(
-          start.latitude,
-          start.longitude,
-          end.latitude,
-          end.longitude,
-        ) /
-        1000;
-
+    final distance = Geolocator.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude) / 1000;
     final time = (distance / 35 * 60).round();
     final arrival = _calculateArrivalTime(time);
-
     return '${distance.toStringAsFixed(1)} km  •  ${_formatDuration(time)}  •  ${arrival}\'de varış';
   }
 
@@ -1111,204 +739,106 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     final points = <LatLng>[];
     try {
       if (geometry is Map && geometry['coordinates'] is List) {
-        final coords = geometry['coordinates'] as List;
-        for (final coord in coords) {
+        for (final coord in geometry['coordinates'] as List) {
           if (coord is List && coord.length >= 2) {
             final lng = (coord[0] as num).toDouble();
             final lat = (coord[1] as num).toDouble();
-            // Validate coordinates
-            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
-              points.add(LatLng(lat, lng));
-            }
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) points.add(LatLng(lat, lng));
           }
         }
       }
-    } catch (e) {
-      debugPrint('GeoJSON decode error: $e');
-    }
+    } catch (e) {}
     return points;
   }
 
   void _fitMapToRoute() {
-    if (!_mapReady ||
-        routePoints.length < 2 ||
-        _mapController == null ||
-        !mounted) {
-      return;
-    }
-
+    if (!_mapReady || routePoints.length < 2 || _mapController == null || !mounted) return;
     try {
-      final bounds = LatLngBounds.fromPoints(routePoints);
-      _mapController!.fitCamera(
-        CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(60),
-        ),
-      );
-    } catch (e) {
-      debugPrint('Route fit error: $e');
-    }
+      _mapController!.fitCamera(CameraFit.bounds(bounds: LatLngBounds.fromPoints(routePoints), padding: const EdgeInsets.all(60)));
+    } catch (e) {}
   }
 
   void _clearRoute() {
     if (!mounted) return;
     setState(() {
-      routePoints.clear();
-      routeInfo = '';
-      isNavigating = false;
-      selectedLocation = null;
-      selectedLocationInfo = null;
-      showLocationCard = false;
-      speed = 0;
-      routeDistance = 0;
-      routeDuration = 0;
-      arrivalTime = '';
+      routePoints.clear(); routeInfo = ''; isNavigating = false;
+      selectedLocation = null; selectedLocationInfo = null; showLocationCard = false;
+      speed = 0; routeDistance = 0; routeDuration = 0; arrivalTime = '';
     });
   }
 
   void _toggleOfflineMode() {
     if (!mounted) return;
     setState(() => forceOffline = !forceOffline);
-    if (selectedLocation != null) {
-      _clearSelection();
-    }
+    if (selectedLocation != null) _clearSelection();
   }
-
-  // ===========================================================================
-  //  SEARCH
-  // ===========================================================================
 
   Future<void> _searchLocation(String query) async {
     if (query.trim().isEmpty || !mounted) return;
-
-    setState(() {
-      _isSearching = true;
-      _searchResults.clear();
-    });
-
+    setState(() { _isSearching = true; _searchResults.clear(); });
     try {
       final encodedQuery = Uri.encodeComponent(query.trim());
-      final url = 'https://nominatim.openstreetmap.org/search?'
-          'format=json&q=$encodedQuery&limit=8&addressdetails=1&dedupe=1&'
-          'bounded=0&countrycodes=tr';
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'User-Agent': 'ModernMapsApp/1.0',
-          'Accept': 'application/json',
-          'Accept-Language': 'tr,en',
-        },
-      ).timeout(const Duration(seconds: 10));
-
+      final url = 'https://nominatim.openstreetmap.org/search?format=json&q=$encodedQuery&limit=8&addressdetails=1&dedupe=1&bounded=0&countrycodes=tr';
+      final response = await http.get(Uri.parse(url), headers: {'User-Agent': 'ModernMapsApp/1.0', 'Accept': 'application/json', 'Accept-Language': 'tr,en'}).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200 && mounted) {
         final List<dynamic> data = json.decode(response.body);
-
         final results = <SearchResult>[];
         final seen = <String>{};
-
         for (final item in data) {
-          if (item['lat'] != null &&
-              item['lon'] != null &&
-              item['display_name'] != null) {
+          if (item['lat'] != null && item['lon'] != null && item['display_name'] != null) {
             final displayName = item['display_name'] as String;
-
             if (seen.contains(displayName)) continue;
             seen.add(displayName);
-
             String name = displayName;
             String shortName = '';
-
             final parts = displayName.split(', ');
-            if (parts.isNotEmpty) {
-              shortName = parts[0];
-              if (parts.length > 1) {
-                final location = parts.skip(1).take(2).join(', ');
-                name = '$shortName, $location';
-              }
-            }
-
+            if (parts.isNotEmpty) { shortName = parts[0]; if (parts.length > 1) name = '$shortName, ${parts.skip(1).take(2).join(', ')}'; }
             results.add(SearchResult(
-              name: name,
-              shortName: shortName,
+              name: name, shortName: shortName,
               latitude: double.tryParse(item['lat']) ?? 0,
               longitude: double.tryParse(item['lon']) ?? 0,
               type: _translateCategory(item['type'] ?? item['class'] ?? ''),
-              importance:
-                  double.tryParse(item['importance']?.toString() ?? '0') ?? 0,
+              importance: double.tryParse(item['importance']?.toString() ?? '0') ?? 0,
             ));
           }
         }
-
         results.sort((a, b) => b.importance.compareTo(a.importance));
-
-        if (mounted) {
-          setState(() {
-            _searchResults = results.take(6).toList();
-          });
-        }
+        if (mounted) setState(() { _searchResults = results.take(6).toList(); });
       }
-    } catch (e) {
-      debugPrint('Search error: $e');
-    } finally {
-      if (mounted) {
-        setState(() => _isSearching = false);
-      }
-    }
+    } catch (e) {} finally { if (mounted) setState(() => _isSearching = false); }
   }
 
   void _onSearchChanged(String value) {
     _searchDebouncer?.cancel();
-
-    if (value.trim().isEmpty) {
-      setState(() {
-        _searchResults.clear();
-      });
-      return;
-    }
-
+    if (value.trim().isEmpty) { setState(() { _searchResults.clear(); }); return; }
     if (value.trim().length < 2) return;
-
-    _searchDebouncer = Timer(const Duration(milliseconds: 800), () {
-      _searchLocation(value);
-    });
+    _searchDebouncer = Timer(const Duration(milliseconds: 800), () { _searchLocation(value); });
   }
 
   void _clearSearch() {
     _searchController.clear();
     _searchFocusNode.unfocus();
-    setState(() {
-      _searchResults.clear();
-    });
+    setState(() { _searchResults.clear(); });
   }
 
   void _goToSearchResult(SearchResult result) {
     if (!mounted) return;
-
     final location = LatLng(result.latitude, result.longitude);
     _mapController?.move(location, 15);
-
     setState(() {
       selectedLocation = location;
       selectedLocationInfo = LocationInfo(
         name: result.shortName.isNotEmpty ? result.shortName : result.name,
-        address: result.name,
-        category: result.type,
-        coordinates:
-            '${result.latitude.toStringAsFixed(4)}, ${result.longitude.toStringAsFixed(4)}',
+        address: result.name, category: result.type,
+        coordinates: '${result.latitude.toStringAsFixed(4)}, ${result.longitude.toStringAsFixed(4)}',
         isOnline: true,
       );
       showLocationCard = true;
       _searchResults.clear();
       _searchController.clear();
     });
-
     _locationCardController.forward();
   }
-
-  // ===========================================================================
-  //  STATUS HELPERS
-  // ===========================================================================
 
   String _getGpsShortStatus() {
     if (gpsAccuracy == 'Mükemmel') return 'A+';
@@ -1336,15 +866,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   String _getMapTileUrl(bool isOfflineMode) {
-    // Always use localhost tile server for offline-first support
-    final style = currentMapStyle;
-    return 'http://127.0.0.1:8080/tiles/$style/{z}/{x}/{y}.png';
+    return 'http://127.0.0.1:8080/tiles/$currentMapStyle/{z}/{x}/{y}.png';
   }
-
-  // ===========================================================================
-  // ===========================================================================
-  //  MAP STYLE PICKER
-  // ===========================================================================
 
   void _showMapStylePicker() {
     showModalBottomSheet(
@@ -1357,12 +880,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           color: _kSurface,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: Colors.white.withOpacity(0.06)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.5),
-              blurRadius: 30,
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 30)],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1373,97 +891,44 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _kPrimary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.layers_rounded,
-                        color: _kPrimary, size: 20),
+                    decoration: BoxDecoration(color: _kPrimary.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.layers_rounded, color: _kPrimary, size: 20),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Harita Stili',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  const Text('Harita Stili', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: 0.3)),
                   const Spacer(),
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
                       padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(Icons.close_rounded,
-                          color: Colors.white.withOpacity(0.4), size: 18),
+                      decoration: BoxDecoration(color: Colors.white.withOpacity(0.06), borderRadius: BorderRadius.circular(8)),
+                      child: Icon(Icons.close_rounded, color: Colors.white.withOpacity(0.4), size: 18),
                     ),
                   ),
                 ],
               ),
             ),
-            Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              color: Colors.white.withOpacity(0.04),
-            ),
+            Container(height: 1, margin: const EdgeInsets.symmetric(horizontal: 24), color: Colors.white.withOpacity(0.04)),
             const SizedBox(height: 4),
             ...availableLayers.map((layer) {
               final isSelected = currentMapStyle == layer.id;
               return Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? _kPrimary.withOpacity(0.08)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                decoration: BoxDecoration(color: isSelected ? _kPrimary.withOpacity(0.08) : Colors.transparent, borderRadius: BorderRadius.circular(14)),
                 child: ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   leading: Container(
-                    width: 42,
-                    height: 42,
+                    width: 42, height: 42,
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? _kPrimary.withOpacity(0.15)
-                          : Colors.white.withOpacity(0.04),
+                      color: isSelected ? _kPrimary.withOpacity(0.15) : Colors.white.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      layer.icon,
-                      color: isSelected
-                          ? _kPrimary
-                          : Colors.white.withOpacity(0.5),
-                      size: 20,
-                    ),
+                    child: Icon(layer.icon, color: isSelected ? _kPrimary : Colors.white.withOpacity(0.5), size: 20),
                   ),
-                  title: Text(
-                    layer.name,
-                    style: TextStyle(
-                      color: isSelected ? _kPrimary : Colors.white,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w400,
-                      fontSize: 15,
-                    ),
-                  ),
-                  trailing: isSelected
-                      ? const Icon(Icons.check_circle_rounded,
-                          color: _kPrimary, size: 22)
-                      : null,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  onTap: () {
-                    setState(() => currentMapStyle = layer.id);
-                    _animateMapTransition();
-                    Navigator.pop(context);
-                  },
+                  title: Text(layer.name, style: TextStyle(color: isSelected ? _kPrimary : Colors.white, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400, fontSize: 15)),
+                  trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: _kPrimary, size: 22) : null,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  onTap: () { setState(() => currentMapStyle = layer.id); _animateMapTransition(); Navigator.pop(context); },
                 ),
               );
             }),
@@ -1473,10 +938,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  // ===========================================================================
-  //  DISPOSE
-  // ===========================================================================
 
   @override
   void dispose() {
@@ -1494,18 +955,11 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // ===========================================================================
-  //  UI BUILDER METHODS
-  // ===========================================================================
-
-  // ── Glass Icon Button ──
-  Widget _buildGlassIconButton(IconData icon, VoidCallback onTap,
-      {double size = 38}) {
+  Widget _buildGlassIconButton(IconData icon, VoidCallback onTap, {double size = 38}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: size,
-        height: size,
+        width: size, height: size,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.06),
           borderRadius: BorderRadius.circular(10),
@@ -1516,139 +970,65 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Gradient Action Button ──
-  Widget _buildGradientButton({
-    required String label,
-    IconData? icon,
-    bool isLoading = false,
-    VoidCallback? onTap,
-  }) {
+  Widget _buildGradientButton({required String label, IconData? icon, bool isLoading = false, VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          gradient: onTap != null
-              ? const LinearGradient(
-                  colors: [_kPrimary, _kAccent],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                )
-              : null,
+          gradient: onTap != null ? const LinearGradient(colors: [_kPrimary, _kAccent], begin: Alignment.centerLeft, end: Alignment.centerRight) : null,
           color: onTap == null ? Colors.white.withOpacity(0.06) : null,
           borderRadius: BorderRadius.circular(14),
-          boxShadow: onTap != null
-              ? [
-                  BoxShadow(
-                    color: _kPrimary.withOpacity(0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : null,
+          boxShadow: onTap != null ? [BoxShadow(color: _kPrimary.withOpacity(0.25), blurRadius: 16, offset: const Offset(0, 4))] : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isLoading)
-              const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            else if (icon != null)
-              Icon(icon, color: Colors.white, size: 18),
+            if (isLoading) const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
+            else if (icon != null) Icon(icon, color: Colors.white, size: 18),
             if (icon != null || isLoading) const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                letterSpacing: 0.3,
-              ),
-            ),
+            Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.3)),
           ],
         ),
       ),
     );
   }
 
-  // ── Control Button (right sidebar) ──
-  Widget _buildControlButton({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-    bool isActive = false,
-  }) {
+  Widget _buildControlButton({required IconData icon, required Color color, required VoidCallback onTap, bool isActive = false}) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        width: 46,
-        height: 46,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isActive ? color.withOpacity(0.15) : Colors.transparent,
-        ),
+        width: 46, height: 46,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: isActive ? color.withOpacity(0.15) : Colors.transparent),
         child: Icon(icon, color: color, size: 22),
       ),
     );
   }
 
-  // ── Current Location Marker ──
   Marker _buildCurrentLocationMarker(bool isOfflineMode) {
     final color = isOfflineMode ? _kWarning : _kPrimary;
     return Marker(
       point: LatLng(currentPosition!.latitude, currentPosition!.longitude),
-      width: 60,
-      height: 60,
+      width: 60, height: 60,
       child: AnimatedBuilder(
         animation: _pulseAnimation,
         builder: (context, child) {
           return Stack(
             alignment: Alignment.center,
             children: [
-              // Outer ring pulse
               Container(
                 width: 60 * (1 + _pulseAnimation.value * 0.4),
                 height: 60 * (1 + _pulseAnimation.value * 0.4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        color.withOpacity(0.4 * (1 - _pulseAnimation.value)),
-                    width: 1.5,
-                  ),
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: color.withOpacity(0.4 * (1 - _pulseAnimation.value)), width: 1.5)),
               ),
-              // Middle glow
+              Container(width: 36, height: 36, decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(0.12))),
               Container(
-                width: 36,
-                height: 36,
+                width: 18, height: 18,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color.withOpacity(0.12),
-                ),
-              ),
-              // Core dot
-              Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
+                  shape: BoxShape.circle, color: color,
                   border: Border.all(color: Colors.white, width: 2.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(0.6),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: color.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)],
                 ),
               ),
             ],
@@ -1658,50 +1038,33 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Selected Location Marker ──
   Marker _buildSelectedLocationMarker(bool isOfflineMode) {
     final color = isOfflineMode ? _kDanger : _kAccent;
     return Marker(
-      point: selectedLocation!,
-      width: 48,
-      height: 48,
+      point: selectedLocation!, width: 48, height: 48,
       child: Container(
         decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
+          color: color, shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2.5),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.5),
-              blurRadius: 14,
-              spreadRadius: 3,
-            ),
-          ],
+          boxShadow: [BoxShadow(color: color.withOpacity(0.5), blurRadius: 14, spreadRadius: 3)],
         ),
         child: const Icon(Icons.place_rounded, color: Colors.white, size: 24),
       ),
     );
   }
 
-  // ── Top Bar (Search or Route) ──
   Widget _buildTopBar(bool isOfflineMode) {
     return Positioned(
       top: MediaQuery.of(context).padding.top + 16,
-      left: 0,
+      left: MediaQuery.of(context).size.width * 0.15,
       right: 0,
       child: Center(
         child: Container(
-          constraints: BoxConstraints(
-            maxWidth: math.min(580, MediaQuery.of(context).size.width * 0.65),
-          ),
+          constraints: BoxConstraints(maxWidth: math.min(580, MediaQuery.of(context).size.width * 0.65)),
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: isOfflineMode
-              ? (routeInfo.isNotEmpty
-                  ? _buildRouteInfoBar()
-                  : _buildOfflineBanner())
-              : (routeInfo.isNotEmpty
-                  ? _buildRouteInfoBar()
-                  : _buildSearchBar()),
+              ? (routeInfo.isNotEmpty ? _buildRouteInfoBar() : _buildOfflineBanner())
+              : (routeInfo.isNotEmpty ? _buildRouteInfoBar() : _buildSearchBar()),
         ),
       ),
     );
@@ -1714,33 +1077,19 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         color: _kSurface.withOpacity(0.95),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _kWarning.withOpacity(0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            blurRadius: 20,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20)],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.wifi_off_rounded, color: _kWarning, size: 18),
           const SizedBox(width: 10),
-          Text(
-            'Çevrimdışı Mod',
-            style: TextStyle(
-              color: _kWarning.withOpacity(0.9),
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              letterSpacing: 0.5,
-            ),
-          ),
+          Text('Çevrimdışı Mod', style: TextStyle(color: _kWarning.withOpacity(0.9), fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.5)),
         ],
       ),
     );
   }
 
-  // ── Route Info Bar ──
   Widget _buildRouteInfoBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -1748,41 +1097,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         color: _kSurface.withOpacity(0.95),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: _kPrimary.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            blurRadius: 20,
-          ),
-          BoxShadow(
-            color: _kPrimary.withOpacity(0.08),
-            blurRadius: 30,
-            spreadRadius: 2,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20), BoxShadow(color: _kPrimary.withOpacity(0.08), blurRadius: 30, spreadRadius: 2)],
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: _kPrimary.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(Icons.navigation_rounded,
-                color: _kPrimary, size: 18),
-          ),
+          Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: _kPrimary.withOpacity(0.12), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.navigation_rounded, color: _kPrimary, size: 18)),
           const SizedBox(width: 14),
-          Expanded(
-            child: Text(
-              routeInfo,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                letterSpacing: 0.3,
-              ),
-            ),
-          ),
+          Expanded(child: Text(routeInfo, style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.w500, fontSize: 14, letterSpacing: 0.3))),
           const SizedBox(width: 8),
           _buildGlassIconButton(Icons.close_rounded, _clearRoute, size: 34),
         ],
@@ -1790,19 +1111,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Search Bar ──
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
         color: _kSurface.withOpacity(0.95),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white.withOpacity(0.06)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            blurRadius: 20,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20)],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1812,58 +1127,23 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             focusNode: _searchFocusNode,
             decoration: InputDecoration(
               hintText: 'Konum ara...',
-              hintStyle: TextStyle(
-                color: Colors.white.withOpacity(0.25),
-                fontSize: 15,
-                fontWeight: FontWeight.w300,
-              ),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.25), fontSize: 15, fontWeight: FontWeight.w300),
               prefixIcon: _isSearching
-                  ? Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(_kPrimary),
-                          backgroundColor: Colors.white.withOpacity(0.06),
-                        ),
-                      ),
-                    )
-                  : Icon(Icons.search_rounded,
-                      color: Colors.white.withOpacity(0.3), size: 22),
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.close_rounded,
-                          color: Colors.white.withOpacity(0.3), size: 20),
-                      onPressed: _clearSearch,
-                    )
-                  : null,
+                  ? Padding(padding: const EdgeInsets.all(14), child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: const AlwaysStoppedAnimation<Color>(_kPrimary), backgroundColor: Colors.white.withOpacity(0.06))))
+                  : Icon(Icons.search_rounded, color: Colors.white.withOpacity(0.3), size: 22),
+              suffixIcon: _searchController.text.isNotEmpty ? IconButton(icon: Icon(Icons.close_rounded, color: Colors.white.withOpacity(0.3), size: 20), onPressed: _clearSearch) : null,
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             ),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w400),
             cursorColor: _kPrimary,
             onSubmitted: _searchLocation,
             onChanged: _onSearchChanged,
           ),
-          // Search Results
           if (_searchResults.isNotEmpty)
             Container(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.5,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.white.withOpacity(0.04)),
-                ),
-              ),
+              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.5),
+              decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.white.withOpacity(0.04)))),
               child: ListView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 4),
@@ -1877,51 +1157,21 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(12),
                       splashColor: _kPrimary.withOpacity(0.08),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         child: Row(
                           children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: _kPrimary.withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(Icons.place_rounded,
-                                  color: _kPrimary, size: 18),
-                            ),
+                            Container(width: 36, height: 36, decoration: BoxDecoration(color: _kPrimary.withOpacity(0.08), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.place_rounded, color: _kPrimary, size: 18)),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    result.shortName.isNotEmpty
-                                        ? result.shortName
-                                        : result.name,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if (result.type.isNotEmpty)
-                                    Text(
-                                      result.type,
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.35),
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                  Text(result.shortName.isNotEmpty ? result.shortName : result.name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                  if (result.type.isNotEmpty) Text(result.type, style: TextStyle(color: Colors.white.withOpacity(0.35), fontSize: 12)),
                                 ],
                               ),
                             ),
-                            Icon(Icons.arrow_forward_ios_rounded,
-                                color: Colors.white.withOpacity(0.15),
-                                size: 14),
+                            Icon(Icons.arrow_forward_ios_rounded, color: Colors.white.withOpacity(0.15), size: 14),
                           ],
                         ),
                       ),
@@ -1935,12 +1185,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Right Controls ──
   Widget _buildRightControls(bool isOfflineMode) {
     return Positioned(
       right: 20,
-      top: MediaQuery.of(context).padding.top +
-          MediaQuery.of(context).size.height * 0.12,
+      top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.12,
       child: SlideTransition(
         position: _sidebarSlideAnimation,
         child: Container(
@@ -1948,51 +1196,17 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             color: _kSurface.withOpacity(0.9),
             borderRadius: BorderRadius.circular(28),
             border: Border.all(color: Colors.white.withOpacity(0.06)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                blurRadius: 20,
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20)],
           ),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildControlButton(
-                icon: isOfflineMode
-                    ? Icons.wifi_off_rounded
-                    : Icons.wifi_rounded,
-                color: isOfflineMode ? _kWarning : _kPrimary,
-                onTap: _toggleOfflineMode,
-                isActive: isOfflineMode,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Container(
-                  width: 24,
-                  height: 1,
-                  color: Colors.white.withOpacity(0.06),
-                ),
-              ),
-              _buildControlButton(
-                icon: Icons.my_location_rounded,
-                color: _kPrimary,
-                onTap: _getCurrentLocation,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Container(
-                  width: 24,
-                  height: 1,
-                  color: Colors.white.withOpacity(0.06),
-                ),
-              ),
-              _buildControlButton(
-                icon: Icons.layers_rounded,
-                color: _kSuccess,
-                onTap: _showMapStylePicker,
-              ),
+              _buildControlButton(icon: isOfflineMode ? Icons.wifi_off_rounded : Icons.wifi_rounded, color: isOfflineMode ? _kWarning : _kPrimary, onTap: _toggleOfflineMode, isActive: isOfflineMode),
+              Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Container(width: 24, height: 1, color: Colors.white.withOpacity(0.06))),
+              _buildControlButton(icon: Icons.my_location_rounded, color: _kPrimary, onTap: _getCurrentLocation),
+              Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Container(width: 24, height: 1, color: Colors.white.withOpacity(0.06))),
+              _buildControlButton(icon: Icons.layers_rounded, color: _kSuccess, onTap: _showMapStylePicker),
             ],
           ),
         ),
@@ -2000,100 +1214,44 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Bottom HUD ──
   Widget _buildBottomHUD(bool isOfflineMode) {
-    final arcSize =
-        math.min(180.0, MediaQuery.of(context).size.shortestSide * 0.28);
-
+    final arcSize = math.min(180.0, MediaQuery.of(context).size.shortestSide * 0.28);
     return Positioned(
-      bottom: 20,
-      left: 0,
-      right: 0,
+      bottom: 20, left: 0, right: 0,
       child: Center(
         child: AnimatedBuilder(
           animation: _statsTransitionController,
           builder: (context, child) {
             return Transform.translate(
               offset: Offset(0, (1 - _statsSlideAnimation.value) * 80),
-              child: Opacity(
-                opacity: _statsOpacityAnimation.value,
-                child: child,
-              ),
+              child: Opacity(opacity: _statsOpacityAnimation.value, child: child),
             );
           },
           child: Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.85,
-            ),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
             margin: EdgeInsets.only(left: 20, right: arcSize + 20),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             decoration: BoxDecoration(
               color: _kSurface.withOpacity(0.92),
               borderRadius: BorderRadius.circular(22),
               border: Border.all(color: Colors.white.withOpacity(0.05)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  blurRadius: 30,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 30, offset: const Offset(0, 8))],
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final compact = constraints.maxWidth < 700;
                 return Row(
-                  mainAxisAlignment: compact
-                      ? MainAxisAlignment.spaceBetween
-                      : MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: compact ? MainAxisAlignment.spaceBetween : MainAxisAlignment.spaceEvenly,
                   children: [
-                    Flexible(
-                      child: _buildHudStat(
-                        icon: _getBatteryIcon(),
-                        value: '$batteryLevel',
-                        unit: '%',
-                        color: _getBatteryColor(),
-                        compact: compact,
-                      ),
-                    ),
+                    Flexible(child: _buildHudStat(icon: _getBatteryIcon(), value: '$batteryLevel', unit: '%', color: _getBatteryColor(), compact: compact)),
                     if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildHudStat(
-                        icon: Icons.gps_fixed_rounded,
-                        value: _getGpsShortStatus(),
-                        unit: 'GPS',
-                        color: _getGpsColor(),
-                        compact: compact,
-                      ),
-                    ),
+                    Flexible(child: _buildHudStat(icon: Icons.gps_fixed_rounded, value: _getGpsShortStatus(), unit: 'GPS', color: _getGpsColor(), compact: compact)),
                     if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildHudStat(
-                        icon: isOfflineMode
-                            ? Icons.wifi_off_rounded
-                            : Icons.wifi_rounded,
-                        value: isOfflineMode ? 'OFF' : 'ON',
-                        unit: 'Net',
-                        color: isOfflineMode ? _kWarning : _kPrimary,
-                        compact: compact,
-                      ),
-                    ),
+                    Flexible(child: _buildHudStat(icon: isOfflineMode ? Icons.wifi_off_rounded : Icons.wifi_rounded, value: isOfflineMode ? 'OFF' : 'ON', unit: 'Net', color: isOfflineMode ? _kWarning : _kPrimary, compact: compact)),
                     if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildToggleIcon(
-                        icon: Icons.arrow_back_rounded,
-                        state: isReversing,
-                        label: 'REYOS',
-                      ),
-                    ),
+                    Flexible(child: _buildToggleIcon(icon: Icons.arrow_back_rounded, state: isReversing, label: 'R')),
                     if (!compact) _buildHudDivider(),
-                    Flexible(
-                      child: _buildToggleIcon(
-                        icon: Icons.rotate_right_rounded,
-                        state: isRotating,
-                        label: 'ROTATE',
-                      ),
-                    ),
+                    Flexible(child: _buildToggleIcon(icon: Icons.rotate_right_rounded, state: isRotating, label: 'G-TURN')),
                   ],
                 );
               },
@@ -2107,62 +1265,34 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _buildArcSpeedometer() {
     final screenSize = MediaQuery.of(context).size;
     final arcSize = math.min(180.0, screenSize.shortestSide * 0.28);
-
     return Positioned(
-      right: 0,
-      bottom: 0,
-      child: GestureDetector(
-        onVerticalDragUpdate: (details) {
-          setState(() {
-            speed = (speed - details.delta.dy.toInt()).clamp(0, 120);
-          });
-        },
-        child: SizedBox(
-          width: arcSize,
-          height: arcSize,
-          child: CustomPaint(
-            painter: ArcSpeedometerPainter(
-              speed: speed.toDouble(),
-              maxSpeed: 100,
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: arcSize * 0.18,
-                  bottom: arcSize * 0.18,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0, end: speed.toDouble()),
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOut,
-                        builder: (context, value, _) => Text(
-                          value.toInt().toString(),
-                          style: TextStyle(
-                            color: _getArcSpeedColor(value),
-                            fontSize: arcSize * 0.22,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -2,
-                            height: 1,
-                          ),
-                        ),
+      right: 0, bottom: 0,
+      child: SizedBox(
+        width: arcSize, height: arcSize,
+        child: CustomPaint(
+          painter: ArcSpeedometerPainter(speed: speed.toDouble(), maxSpeed: 100),
+          child: Stack(
+            children: [
+              Positioned(
+                right: arcSize * 0.18, bottom: arcSize * 0.18,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: _displaySpeed, end: speed.toDouble()),
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      builder: (context, value, _) => Text(
+                        value.toInt().toString(),
+                        style: TextStyle(color: _getArcSpeedColor(value), fontSize: arcSize * 0.22, fontWeight: FontWeight.w800, letterSpacing: -2, height: 1),
                       ),
-                      Text(
-                        'km/h',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.45),
-                          fontSize: arcSize * 0.07,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text('km/h', style: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: arcSize * 0.07, fontWeight: FontWeight.w500, letterSpacing: 2)),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -2179,109 +1309,39 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   Widget _buildBalanceIndicator() {
     final screenSize = MediaQuery.of(context).size;
     final indicatorWidth = screenSize.width * 0.35;
-    final indicatorHeight = 24.0;
-
+    const indicatorHeight = 24.0;
     return Positioned(
-      right: screenSize.width * 0.05,
-      bottom: screenSize.height * 0.12,
+      right: screenSize.width * 0.15,
+      bottom: screenSize.height * 0.20,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'BALANCE',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.5,
-            ),
-          ),
-          SizedBox(height: 6),
+          Text('BALANCE', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 9, fontWeight: FontWeight.w600, letterSpacing: 1.5)),
+          const SizedBox(height: 6),
           Container(
-            width: indicatorWidth,
-            height: indicatorHeight,
-            decoration: BoxDecoration(
-              border: Border.all(color: _kPrimary.withOpacity(0.5), width: 1),
-              borderRadius: BorderRadius.circular(8),
-            ),
+            width: indicatorWidth, height: indicatorHeight,
+            decoration: BoxDecoration(border: Border.all(color: _kPrimary.withOpacity(0.5), width: 1), borderRadius: BorderRadius.circular(8)),
             child: Stack(
               children: [
-                // Center line (neutral position)
-                Positioned(
-                  left: indicatorWidth / 2 - 1,
-                  top: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 2,
-                    color: Colors.white.withOpacity(0.2),
-                  ),
-                ),
-                // Label: Back
-                Positioned(
-                  left: 4,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Text(
-                      'B',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.3),
-                        fontSize: 7,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                // Label: Front
-                Positioned(
-                  right: 4,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Text(
-                      'F',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.3),
-                        fontSize: 7,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                // Moving indicator (smooth animation)
+                Positioned(left: indicatorWidth / 2 - 1, top: 0, bottom: 0, child: Container(width: 2, color: Colors.white.withOpacity(0.2))),
+                Positioned(left: 4, top: 0, bottom: 0, child: Center(child: Text('B', style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 7, fontWeight: FontWeight.w600)))),
+                Positioned(right: 4, top: 0, bottom: 0, child: Center(child: Text('F', style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 7, fontWeight: FontWeight.w600)))),
                 TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: (accelFrontBack + 10) / 20.0), // Normalize -10..+10 to 0..1
+                  tween: Tween(begin: (_displayAccel + 50) / 100.0, end: (accelFrontBack + 50) / 100.0),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOutCubic,
                   builder: (context, normalizedValue, _) {
                     final offset = (indicatorWidth - 8) * normalizedValue;
                     final isFront = accelFrontBack > 0;
                     final isBack = accelFrontBack < 0;
-
                     return Positioned(
-                      left: offset,
-                      top: (indicatorHeight - 8) / 2,
+                      left: offset, top: (indicatorHeight - 8) / 2,
                       child: Container(
-                        width: 8,
-                        height: 8,
+                        width: 8, height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isFront
-                              ? _kSuccess.withOpacity(0.8)
-                              : isBack
-                                  ? _kWarning.withOpacity(0.8)
-                                  : _kPrimary.withOpacity(0.8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: isFront
-                                  ? _kSuccess
-                                  : isBack
-                                      ? _kWarning
-                                      : _kPrimary,
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                            ),
-                          ],
+                          color: isFront ? _kSuccess.withOpacity(0.8) : isBack ? _kWarning.withOpacity(0.8) : _kPrimary.withOpacity(0.8),
+                          boxShadow: [BoxShadow(color: isFront ? _kSuccess : isBack ? _kWarning : _kPrimary, blurRadius: 6, spreadRadius: 1)],
                         ),
                       ),
                     );
@@ -2295,13 +1355,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildHudStat({
-    required IconData icon,
-    required String value,
-    required String unit,
-    required Color color,
-    bool compact = false,
-  }) {
+  Widget _buildHudStat({required IconData icon, required String value, required String unit, required Color color, bool compact = false}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -2312,24 +1366,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(
-              value,
-              style: TextStyle(
-                color: color,
-                fontSize: compact ? 14 : 17,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.5,
-              ),
-            ),
+            Text(value, style: TextStyle(color: color, fontSize: compact ? 14 : 17, fontWeight: FontWeight.w700, letterSpacing: -0.5)),
             SizedBox(width: compact ? 1 : 2),
-            Text(
-              unit,
-              style: TextStyle(
-                color: color.withOpacity(0.45),
-                fontSize: compact ? 9 : 10,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            Text(unit, style: TextStyle(color: color.withOpacity(0.45), fontSize: compact ? 9 : 10, fontWeight: FontWeight.w400)),
           ],
         ),
       ],
@@ -2337,55 +1376,29 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   }
 
   Widget _buildHudDivider() {
-    return Container(
-      width: 1,
-      height: 30,
-      margin: const EdgeInsets.symmetric(horizontal: 2),
-      color: Colors.white.withOpacity(0.05),
-    );
+    return Container(width: 1, height: 30, margin: const EdgeInsets.symmetric(horizontal: 2), color: Colors.white.withOpacity(0.05));
   }
 
-  Widget _buildToggleIcon({
-    required IconData icon,
-    required int state,
-    required String label,
-  }) {
+  Widget _buildToggleIcon({required IconData icon, required int state, required String label}) {
     final isActive = state == 1;
     final color = isActive ? _kSuccess : Colors.white.withOpacity(0.3);
-    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, color: color, size: 16),
-        SizedBox(height: 3),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: 8,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        const SizedBox(height: 3),
+        Text(label, style: TextStyle(color: color, fontSize: 8, fontWeight: FontWeight.w500)),
       ],
     );
   }
 
   Widget _buildErrorCircles() {
     return Positioned(
-      top: 20,
-      left: 20,
+      top: 20, left: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'ERROR STATUS',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Colors.white.withOpacity(0.5),
-              letterSpacing: 1.5,
-            ),
-          ),
+          Text('ERROR STATUS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.5), letterSpacing: 1.5)),
           const SizedBox(height: 8),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -2394,28 +1407,13 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Container(
-                  width: 16,
-                  height: 16,
+                  width: 16, height: 16,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isError ? _kDanger : _kSuccess,
-                    boxShadow: [
-                      BoxShadow(
-                        color: (isError ? _kDanger : _kSuccess).withOpacity(0.5),
-                        blurRadius: 8,
-                      ),
-                    ],
+                    boxShadow: [BoxShadow(color: (isError ? _kDanger : _kSuccess).withOpacity(0.5), blurRadius: 8)],
                   ),
-                  child: Center(
-                    child: Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.3),
-                      ),
-                    ),
-                  ),
+                  child: Center(child: Container(width: 6, height: 6, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black.withOpacity(0.3)))),
                 ),
               );
             }),
@@ -2425,11 +1423,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Location Card ──
   Widget _buildLocationCard(bool isOfflineMode) {
     final accentColor = isOfflineMode ? _kWarning : _kPrimary;
     final screenSize = MediaQuery.of(context).size;
-
     return AnimatedBuilder(
       animation: _locationCardController,
       builder: (context, child) {
@@ -2446,20 +1442,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   color: _kSurface.withOpacity(0.95),
                   borderRadius: BorderRadius.circular(22),
-                  border:
-                      Border.all(color: accentColor.withOpacity(0.12)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      blurRadius: 30,
-                      offset: const Offset(0, 8),
-                    ),
-                    BoxShadow(
-                      color: accentColor.withOpacity(0.05),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ],
+                  border: Border.all(color: accentColor.withOpacity(0.12)),
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 30, offset: const Offset(0, 8)), BoxShadow(color: accentColor.withOpacity(0.05), blurRadius: 20, spreadRadius: 2)],
                 ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: screenSize.height * 0.65),
@@ -2468,155 +1452,53 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: accentColor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Icon(
-                                isOfflineMode
-                                    ? Icons.location_pin
-                                    : Icons.place_rounded,
-                                color: accentColor,
-                                size: 20,
-                              ),
-                            ),
+                            Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: accentColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)), child: Icon(isOfflineMode ? Icons.location_pin : Icons.place_rounded, color: accentColor, size: 20)),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    selectedLocationInfo?.name ??
-                                        'Konum Yükleniyor...',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                      letterSpacing: 0.2,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if (selectedLocationInfo
-                                          ?.category.isNotEmpty ==
-                                      true)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 3),
-                                      child: Text(
-                                        selectedLocationInfo!.category,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: accentColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
+                                  Text(selectedLocationInfo?.name ?? 'Konum Yükleniyor...', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white, letterSpacing: 0.2), maxLines: 2, overflow: TextOverflow.ellipsis),
+                                  if (selectedLocationInfo?.category.isNotEmpty == true)
+                                    Padding(padding: const EdgeInsets.only(top: 3), child: Text(selectedLocationInfo!.category, style: TextStyle(fontSize: 12, color: accentColor, fontWeight: FontWeight.w500))),
                                 ],
                               ),
                             ),
-                            _buildGlassIconButton(
-                                Icons.close_rounded, _hideLocationCard,
-                                size: 34),
+                            _buildGlassIconButton(Icons.close_rounded, _hideLocationCard, size: 34),
                           ],
                         ),
                         if (selectedLocationInfo != null) ...[
-                          // Divider
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Container(
-                              height: 1,
-                              color: Colors.white.withOpacity(0.05),
-                            ),
-                          ),
-                          // Address
+                          Padding(padding: const EdgeInsets.symmetric(vertical: 14), child: Container(height: 1, color: Colors.white.withOpacity(0.05))),
                           if (selectedLocationInfo!.address.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Text(
-                                selectedLocationInfo!.address,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.55),
-                                  fontSize: 13,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ),
-                          // Coordinates
+                            Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(selectedLocationInfo!.address, style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 13, height: 1.4))),
                           Row(
                             children: [
-                              Icon(Icons.tag_rounded,
-                                  color: Colors.white.withOpacity(0.2),
-                                  size: 14),
+                              Icon(Icons.tag_rounded, color: Colors.white.withOpacity(0.2), size: 14),
                               const SizedBox(width: 6),
-                              Text(
-                                selectedLocationInfo!.coordinates,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.3),
-                                  fontSize: 12,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                              Text(selectedLocationInfo!.coordinates, style: TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 12, letterSpacing: 0.5)),
                             ],
                           ),
                           const SizedBox(height: 18),
-                          // Actions
                           if (!isOfflineMode)
                             Row(
                               children: [
-                                Expanded(
-                                  child: _buildGradientButton(
-                                    label: isGettingRoute
-                                        ? 'Hesaplanıyor...'
-                                        : 'Rota Hesapla',
-                                    icon: isGettingRoute
-                                        ? null
-                                        : Icons.navigation_rounded,
-                                    isLoading: isGettingRoute,
-                                    onTap:
-                                        isGettingRoute ? null : _calculateRoute,
-                                  ),
-                                ),
+                                Expanded(child: _buildGradientButton(label: isGettingRoute ? 'Hesaplanıyor...' : 'Rota Hesapla', icon: isGettingRoute ? null : Icons.navigation_rounded, isLoading: isGettingRoute, onTap: isGettingRoute ? null : _calculateRoute)),
                                 const SizedBox(width: 10),
-                                _buildGlassIconButton(
-                                    Icons.close_rounded, _clearSelection,
-                                    size: 46),
+                                _buildGlassIconButton(Icons.close_rounded, _clearSelection, size: 46),
                               ],
                             )
                           else
                             Container(
                               padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: _kWarning.withOpacity(0.06),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                    color: _kWarning.withOpacity(0.12)),
-                              ),
+                              decoration: BoxDecoration(color: _kWarning.withOpacity(0.06), borderRadius: BorderRadius.circular(14), border: Border.all(color: _kWarning.withOpacity(0.12))),
                               child: Row(
                                 children: [
-                                  Icon(Icons.wifi_off_rounded,
-                                      color: _kWarning.withOpacity(0.7),
-                                      size: 18),
+                                  Icon(Icons.wifi_off_rounded, color: _kWarning.withOpacity(0.7), size: 18),
                                   const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      'Çevrimdışı — sadece koordinat bilgisi',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: _kWarning.withOpacity(0.6),
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: _clearSelection,
-                                    child: Icon(Icons.close_rounded,
-                                        color: _kWarning.withOpacity(0.4),
-                                        size: 16),
-                                  ),
+                                  Expanded(child: Text('Çevrimdışı — sadece koordinat bilgisi', style: TextStyle(fontSize: 12, color: _kWarning.withOpacity(0.6)))),
+                                  GestureDetector(onTap: _clearSelection, child: Icon(Icons.close_rounded, color: _kWarning.withOpacity(0.4), size: 16)),
                                 ],
                               ),
                             ),
@@ -2633,13 +1515,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     );
   }
 
-  // ===========================================================================
-  //  BUILD
-  // ===========================================================================
-
   @override
   Widget build(BuildContext context) {
-    // Loading State
     if (_isInitializing) {
       return Scaffold(
         backgroundColor: _kBg,
@@ -2647,25 +1524,9 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                width: 48,
-                height: 48,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  valueColor: const AlwaysStoppedAnimation<Color>(_kPrimary),
-                  backgroundColor: Colors.white.withOpacity(0.04),
-                ),
-              ),
+              SizedBox(width: 48, height: 48, child: CircularProgressIndicator(strokeWidth: 2.5, valueColor: const AlwaysStoppedAnimation<Color>(_kPrimary), backgroundColor: Colors.white.withOpacity(0.04))),
               const SizedBox(height: 24),
-              Text(
-                'HARİTA YÜKLENİYOR',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withOpacity(0.35),
-                  letterSpacing: 3,
-                ),
-              ),
+              Text('HARİTA YÜKLENİYOR', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.white.withOpacity(0.35), letterSpacing: 3)),
             ],
           ),
         ),
@@ -2680,70 +1541,32 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
         bottom: false,
         child: Stack(
           children: [
-            // ── MAP ──
             Positioned.fill(
               child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
-                  initialCenter: const LatLng(41.0364, 28.9849),  // Taksim, Istanbul
-                  initialZoom: 13,
-                  minZoom: 3,
-                  maxZoom: 18,
+                  initialCenter: const LatLng(41.0364, 28.9849),
+                  initialZoom: 13, minZoom: 3, maxZoom: 18,
                   onTap: (_, point) => _onMapTap(point),
                   onMapReady: _onMapReady,
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate: _getMapTileUrl(isOfflineMode),
-                    maxZoom: 18,
-                    userAgentPackageName: 'com.modernmaps.app',
-                    errorTileCallback: (tile, error, stackTrace) {},
-                  ),
-                  // Route line
+                  TileLayer(urlTemplate: _getMapTileUrl(isOfflineMode), maxZoom: 18, userAgentPackageName: 'com.modernmaps.app', errorTileCallback: (tile, error, stackTrace) {}),
                   if (routePoints.length >= 2 && !isOfflineMode)
-                    PolylineLayer(
-                      polylines: [
-                        Polyline(
-                          points: routePoints,
-                          strokeWidth: 4.5,
-                          color: _kPrimary,
-                          borderStrokeWidth: 3,
-                          borderColor: _kPrimary.withOpacity(0.25),
-                        ),
-                      ],
-                    ),
-                  // Markers
-                  MarkerLayer(
-                    markers: [
-                      if (currentPosition != null)
-                        _buildCurrentLocationMarker(isOfflineMode),
-                      if (selectedLocation != null)
-                        _buildSelectedLocationMarker(isOfflineMode),
-                    ],
-                  ),
+                    PolylineLayer(polylines: [Polyline(points: routePoints, strokeWidth: 4.5, color: _kPrimary, borderStrokeWidth: 3, borderColor: _kPrimary.withOpacity(0.25))]),
+                  MarkerLayer(markers: [
+                    if (currentPosition != null) _buildCurrentLocationMarker(isOfflineMode),
+                    if (selectedLocation != null) _buildSelectedLocationMarker(isOfflineMode),
+                  ]),
                 ],
               ),
             ),
-
-            // ── TOP BAR ──
             _buildTopBar(isOfflineMode),
-
-            // ── RIGHT CONTROLS ──
             _buildRightControls(isOfflineMode),
-
-            // ── BOTTOM HUD ──
             _buildBottomHUD(isOfflineMode),
-
-            // ── ERROR CIRCLES ──
             _buildErrorCircles(),
-
-            // ── ARC SPEEDOMETER ──
             _buildArcSpeedometer(),
-
-            // ── BALANCE INDICATOR ──
             _buildBalanceIndicator(),
-
-            // ── LOCATION CARD ──
             if (showLocationCard) _buildLocationCard(isOfflineMode),
           ],
         ),
@@ -2760,7 +1583,6 @@ class MapLayer {
   final String id;
   final String name;
   final IconData icon;
-
   MapLayer(this.id, this.name, this.icon);
 }
 
@@ -2770,14 +1592,7 @@ class LocationInfo {
   final String category;
   final String coordinates;
   final bool isOnline;
-
-  LocationInfo({
-    required this.name,
-    required this.address,
-    required this.category,
-    required this.coordinates,
-    required this.isOnline,
-  });
+  LocationInfo({required this.name, required this.address, required this.category, required this.coordinates, required this.isOnline});
 }
 
 class SearchResult {
@@ -2787,117 +1602,52 @@ class SearchResult {
   final double longitude;
   final String type;
   final double importance;
-
-  SearchResult({
-    required this.name,
-    this.shortName = '',
-    required this.latitude,
-    required this.longitude,
-    required this.type,
-    this.importance = 0.0,
-  });
+  SearchResult({required this.name, this.shortName = '', required this.latitude, required this.longitude, required this.type, this.importance = 0.0});
 }
 
 class ArcSpeedometerPainter extends CustomPainter {
   final double speed;
   final double maxSpeed;
-
   ArcSpeedometerPainter({required this.speed, required this.maxSpeed});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width, size.height);
     final radius = size.width * 0.85;
-
     const startAngle = math.pi;
     const sweepAngle = math.pi / 2;
 
-    final trackPaint = Paint()
-      ..color = Colors.white.withOpacity(0.06)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.08
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      trackPaint,
-    );
+    final trackPaint = Paint()..color = Colors.white.withOpacity(0.06)..style = PaintingStyle.stroke..strokeWidth = size.width * 0.08..strokeCap = StrokeCap.round;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, sweepAngle, false, trackPaint);
 
     final progress = (speed / maxSpeed).clamp(0.0, 1.0);
     final activeSweep = sweepAngle * progress;
 
     final gradient = SweepGradient(
-      startAngle: startAngle,
-      endAngle: startAngle + sweepAngle,
-      colors: const [
-        Color(0xFF00E676),
-        Color(0xFFFFEB3B),
-        Color(0xFFFF9100),
-        Color(0xFFFF5252),
-      ],
+      startAngle: startAngle, endAngle: startAngle + sweepAngle,
+      colors: const [Color(0xFF00E676), Color(0xFFFFEB3B), Color(0xFFFF9100), Color(0xFFFF5252)],
       stops: const [0.0, 0.4, 0.7, 1.0],
     );
 
-    final activePaint = Paint()
-      ..shader = gradient.createShader(
-        Rect.fromCircle(center: center, radius: radius),
-      )
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.09
-      ..strokeCap = StrokeCap.round;
+    final activePaint = Paint()..shader = gradient.createShader(Rect.fromCircle(center: center, radius: radius))..style = PaintingStyle.stroke..strokeWidth = size.width * 0.09..strokeCap = StrokeCap.round;
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, activeSweep, false, activePaint);
 
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      activeSweep,
-      false,
-      activePaint,
-    );
+    final glowPaint = Paint()..shader = gradient.createShader(Rect.fromCircle(center: center, radius: radius))..style = PaintingStyle.stroke..strokeWidth = size.width * 0.09..strokeCap = StrokeCap.round..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, activeSweep, false, glowPaint);
 
-    final glowPaint = Paint()
-      ..shader = gradient.createShader(
-        Rect.fromCircle(center: center, radius: radius),
-      )
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.09
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      activeSweep,
-      false,
-      glowPaint,
-    );
-
-    final tickPaint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
+    final tickPaint = Paint()..color = Colors.white.withOpacity(0.2)..style = PaintingStyle.stroke..strokeWidth = 1.5;
     for (int i = 0; i <= 10; i++) {
       final tickAngle = startAngle + (sweepAngle * i / 10);
       final innerRadius = radius - size.width * 0.13;
       final outerRadius = radius - size.width * 0.10;
-
-      final p1 = Offset(
-        center.dx + innerRadius * math.cos(tickAngle),
-        center.dy + innerRadius * math.sin(tickAngle),
+      canvas.drawLine(
+        Offset(center.dx + innerRadius * math.cos(tickAngle), center.dy + innerRadius * math.sin(tickAngle)),
+        Offset(center.dx + outerRadius * math.cos(tickAngle), center.dy + outerRadius * math.sin(tickAngle)),
+        tickPaint,
       );
-      final p2 = Offset(
-        center.dx + outerRadius * math.cos(tickAngle),
-        center.dy + outerRadius * math.sin(tickAngle),
-      );
-
-      canvas.drawLine(p1, p2, tickPaint);
     }
   }
 
   @override
-  bool shouldRepaint(ArcSpeedometerPainter old) =>
-      old.speed != speed || old.maxSpeed != maxSpeed;
+  bool shouldRepaint(ArcSpeedometerPainter old) => old.speed != speed || old.maxSpeed != maxSpeed;
 }

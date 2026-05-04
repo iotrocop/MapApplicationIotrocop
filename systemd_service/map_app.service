@@ -11,25 +11,23 @@ WorkingDirectory=/home/iot/map_app_src
 
 # Environment configuration
 Environment="PATH=/home/iot/.local/bin:/usr/local/bin:/usr/bin:/bin"
-Environment="DISPLAY=:0"
-Environment="XDG_RUNTIME_DIR=/run/user/1000"
-Environment="FLUTTER_CACHE_DIR=/home/iot/.cache/flutter"
+Environment="LD_LIBRARY_PATH=/usr/lib/aarch64-linux-gnu:/usr/local/lib/aarch64-linux-gnu"
 Environment="FLUTTER_DISABLE_CRASH_REPORTING=true"
 
-# Give backend time to start
-ExecStartPre=/bin/sleep 2
+# Give backend time to start and initialize
+ExecStartPre=/bin/sleep 3
 
-# Start the Linux Flutter executable directly
-ExecStart=/home/iot/map_app_src/build/linux/arm64/release/bundle/map_application
+# Start with flutter-pi on DRM/KMS (no desktop session required)
+ExecStart=/home/iot/map_app/flutter-pi --release /home/iot/map_app_src/build/flutter_assets
 
 # Restart policy
 Restart=on-failure
-RestartSec=10
+RestartSec=5
 StartLimitInterval=120
 StartLimitBurst=3
 
 # Timeout settings
-TimeoutStartSec=60
+TimeoutStartSec=90
 TimeoutStopSec=15
 
 [Install]
